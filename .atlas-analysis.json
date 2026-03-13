@@ -1,0 +1,83 @@
+{
+  "projectType": "sdk-library",
+  "projectName": "AnyCarousel",
+  "projectDescription": "A highly customizable, smooth, and responsive React carousel library with custom easing and advanced animations.",
+  "theme": "palm",
+  "primaryColor": "#3B82F6",
+  "lightColor": "#60A5FA",
+  "darkColor": "#1E40AF",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "installation",
+              "quickstart"
+            ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "guides/basic-usage",
+              "guides/custom-easing",
+              "guides/custom-icons",
+              "guides/auto-scroll",
+              "guides/snap-scrolling",
+              "guides/theming"
+            ]
+          },
+          {
+            "group": "Examples",
+            "pages": [
+              "examples/image-carousel",
+              "examples/video-carousel",
+              "examples/custom-components",
+              "examples/full-page-carousel"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Components",
+            "pages": [
+              "api/carousel"
+            ]
+          },
+          {
+            "group": "Types",
+            "pages": [
+              "api/carousel-props",
+              "api/icon-options",
+              "api/theme",
+              "api/scroll-snap-options"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Custom easing using bezier curves for smooth animations",
+    "Auto-scroll with customizable intervals",
+    "Touch gesture support for mobile and tablet devices",
+    "Custom navigation icons with theming",
+    "Flexible snap scrolling (start, center, end, none)",
+    "Light and dark theme support",
+    "Desktop scroll support (Shift + Scroll, touchpad gestures)",
+    "Content agnostic - works with images, videos, and custom components"
+  ],
+  "publicApiSurface": [
+    "Carousel",
+    "CarouselProps",
+    "Theme",
+    "ScrollSnapOptions",
+    "IconOptions"
+  ]
+}
