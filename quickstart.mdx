@@ -1,80 +1,253 @@
 ---
-title: "Quickstart"
-description: "Start building awesome documentation in minutes"
+title: Quickstart
+description: Build your first carousel in minutes with AnyCarousel
 ---
 
-## Get started in three steps
+This guide will walk you through creating your first carousel, from basic setup to adding advanced features.
 
-Get your documentation site running locally and make your first customization.
+## Prerequisites
 
-### Step 1: Set up your local environment
-
-<AccordionGroup>
-  <Accordion icon="copy" title="Clone your docs locally">
-    During the onboarding process, you created a GitHub repository with your docs content if you didn't already have one. You can find a link to this repository in your [dashboard](https://dashboard.mintlify.com).
-    
-    To clone the repository locally so that you can make and preview changes to your docs, follow the [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) guide in the GitHub docs.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Start the preview server">
-    1. Install the Mintlify CLI: `npm i -g mint`
-    2. Navigate to your docs directory and run: `mint dev`
-    3. Open `http://localhost:3000` to see your docs live!
-    
-    <Tip>Your preview updates automatically as you edit files.</Tip>
-  </Accordion>
-</AccordionGroup>
-
-### Step 2: Deploy your changes
-
-<AccordionGroup>
-  <Accordion icon="github" title="Install our GitHub app">
-    Install the Mintlify GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app).
-    
-    Our GitHub app automatically deploys your changes to your docs site, so you don't need to manage deployments yourself.
-</Accordion>
-<Accordion icon="palette" title="Update your site name and colors">
-    For a first change, let's update the name and colors of your docs site.
-
-    1. Open `docs.json` in your editor.
-    2. Change the `"name"` field to your project name.
-    3. Update the `"colors"` to match your brand.
-    4. Save and see your changes instantly at `http://localhost:3000`.
-
-    <Tip>Try changing the primary color to see an immediate difference!</Tip>
-  </Accordion>
-</AccordionGroup>
-
-### Step 3: Go live
-
-<Accordion icon="rocket" title="Publish your docs">
-  1. Commit and push your changes.
-  2. Your docs will update and be live in moments!
-</Accordion>
-
-## Next steps
-
-Now that you have your docs running, explore these key features:
-
-<CardGroup cols={2}>
-
-<Card title="Write Content" icon="pen-to-square" href="/essentials/markdown">
-  Learn MDX syntax and start writing your documentation.
-</Card>
-
-<Card title="Customize style" icon="palette" href="/essentials/settings">
-  Make your docs match your brand perfectly.
-</Card>
-
-<Card title="Add code examples" icon="square-code" href="/essentials/code">
-  Include syntax-highlighted code blocks.
-</Card>
-
-<Card title="API documentation" icon="code" href="/api-reference/introduction">
-  Auto-generate API docs from OpenAPI specs.
-</Card>
-
-</CardGroup>
+Before you begin, make sure you have:
+- A React project (version 19.0.0 or higher)
+- Node.js 18 or higher
+- npm, yarn, or pnpm installed
 
 <Note>
-  **Need help?** See our [full documentation](https://mintlify.com/docs) or join our [community](https://mintlify.com/community).
+If you haven't installed AnyCarousel yet, check out the [Installation](/installation) guide first.
 </Note>
+
+## Build Your First Carousel
+
+<Steps>
+  <Step title="Import the Carousel component">
+    Start by importing the Carousel component into your React file:
+
+    ```tsx
+    import { Carousel } from "react-any-carousel";
+    ```
+  </Step>
+
+  <Step title="Create a basic carousel">
+    Add the Carousel component with some simple content:
+
+    ```tsx
+    function App() {
+      return (
+        <Carousel>
+          <div className="card">Slide 1</div>
+          <div className="card">Slide 2</div>
+          <div className="card">Slide 3</div>
+          <div className="card">Slide 4</div>
+        </Carousel>
+      );
+    }
+    ```
+
+    That's it! You now have a working carousel with navigation buttons and swipe support.
+  </Step>
+
+  <Step title="Add some styling">
+    Style your carousel items so they're visible:
+
+    ```css
+    .card {
+      min-width: 300px;
+      height: 200px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+      margin: 0 10px;
+    }
+    ```
+
+    <Tip>
+    The `min-width` property ensures your items maintain their size, while `margin` adds spacing between items.
+    </Tip>
+  </Step>
+
+  <Step title="Configure snap scrolling">
+    Add the `scrollSnapType` prop to control how items snap into place:
+
+    ```tsx
+    <Carousel scrollSnapType="center">
+      <div className="card">Slide 1</div>
+      <div className="card">Slide 2</div>
+      <div className="card">Slide 3</div>
+      <div className="card">Slide 4</div>
+    </Carousel>
+    ```
+
+    Available snap options:
+    - `"start"` - Items snap to the start of the container
+    - `"center"` - Items snap to the center (great for galleries)
+    - `"end"` - Items snap to the end
+    - `"none"` - Free scrolling without snapping
+  </Step>
+
+  <Step title="Control scroll distance">
+    Use `scrollOffset` to control how far the carousel scrolls with each click:
+
+    ```tsx
+    <Carousel 
+      scrollSnapType="center" 
+      scrollOffset={320}
+    >
+      <div className="card">Slide 1</div>
+      <div className="card">Slide 2</div>
+      <div className="card">Slide 3</div>
+      <div className="card">Slide 4</div>
+    </Carousel>
+    ```
+
+    <Note>
+    Set `scrollOffset` to your card width plus margin for single-item scrolling, or to the container width for full-page scrolling.
+    </Note>
+  </Step>
+
+  <Step title="Customize animation">
+    Adjust the scroll `duration` and add custom `scrollEasing` for smooth animations:
+
+    ```tsx
+    <Carousel 
+      scrollSnapType="center" 
+      scrollOffset={320}
+      duration={800}
+      scrollEasing="cubic-bezier(0.25, 1, 0.5, 1)"
+    >
+      <div className="card">Slide 1</div>
+      <div className="card">Slide 2</div>
+      <div className="card">Slide 3</div>
+      <div className="card">Slide 4</div>
+    </Carousel>
+    ```
+
+    The `duration` is in milliseconds (range: 100-5000ms, default: 600ms).
+  </Step>
+</Steps>
+
+## Complete Example
+
+Here's a complete, production-ready carousel with all features:
+
+```tsx App.tsx
+import { Carousel } from "react-any-carousel";
+import "./styles.css";
+
+function App() {
+  return (
+    <div className="app">
+      <h1>My Carousel</h1>
+      <Carousel
+        scrollSnapType="center"
+        scrollOffset={320}
+        duration={800}
+        scrollEasing="cubic-bezier(0.25, 1, 0.5, 1)"
+        theme="light"
+      >
+        <div className="card">
+          <img src="/images/slide1.jpg" alt="Slide 1" />
+          <h3>Beautiful Slide 1</h3>
+        </div>
+        <div className="card">
+          <img src="/images/slide2.jpg" alt="Slide 2" />
+          <h3>Amazing Slide 2</h3>
+        </div>
+        <div className="card">
+          <img src="/images/slide3.jpg" alt="Slide 3" />
+          <h3>Stunning Slide 3</h3>
+        </div>
+        <div className="card">
+          <img src="/images/slide4.jpg" alt="Slide 4" />
+          <h3>Gorgeous Slide 4</h3>
+        </div>
+      </Carousel>
+    </div>
+  );
+}
+
+export default App;
+```
+
+```css styles.css
+.app {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 40px;
+  color: #333;
+}
+
+.card {
+  min-width: 300px;
+  height: 400px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin: 0 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.card img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+}
+
+.card h3 {
+  padding: 20px;
+  margin: 0;
+  text-align: center;
+  color: #333;
+}
+```
+
+## Interactive Features
+
+Your carousel now supports:
+
+<CardGroup cols={2}>
+  <Card title="Touch Gestures" icon="hand-pointer">
+    Swipe left or right on mobile and tablet devices
+  </Card>
+  <Card title="Mouse Scrolling" icon="computer-mouse">
+    Shift + Scroll wheel for horizontal navigation on desktop
+  </Card>
+  <Card title="Touchpad Gestures" icon="laptop">
+    Two-finger scroll gesture on trackpads
+  </Card>
+  <Card title="Navigation Buttons" icon="arrows-left-right">
+    Click left/right buttons that automatically show/hide based on scroll position
+  </Card>
+</CardGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Add Auto-Scroll" icon="play" href="/guides/auto-scroll">
+    Make your carousel automatically advance through slides
+  </Card>
+  <Card title="Custom Icons" icon="icons" href="/guides/custom-icons">
+    Replace the default navigation icons with your own
+  </Card>
+  <Card title="Custom Easing" icon="wave-pulse" href="/guides/custom-easing">
+    Create advanced animations with bezier curves
+  </Card>
+  <Card title="View Examples" icon="sparkles" href="/examples/image-carousel">
+    See real-world carousel implementations
+  </Card>
+</CardGroup>
+
+<Warning>
+The carousel automatically disables auto-scrolling when users interact with it (clicking navigation buttons or manual scrolling). This ensures a better user experience.
+</Warning>

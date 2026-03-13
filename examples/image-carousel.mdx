@@ -1,0 +1,299 @@
+---
+title: "Image Carousel"
+description: "Build a smooth image carousel with optimal scrolling and snap settings"
+---
+
+# Image Carousel
+
+Create a beautiful image carousel with smooth scrolling and snap-to-start behavior. This example demonstrates the optimal configuration for displaying images.
+
+## Basic Image Carousel
+
+This example shows a carousel optimized for images with automatic snapping and smooth scrolling.
+
+<CodeGroup>
+```tsx Component
+import { Carousel } from 'react-any-carousal';
+
+export default function ImageCarousel() {
+  const images = [
+    { id: 1, src: '/images/gallery-1.jpg', alt: 'Mountain landscape' },
+    { id: 2, src: '/images/gallery-2.jpg', alt: 'Ocean sunset' },
+    { id: 3, src: '/images/gallery-3.jpg', alt: 'Forest trail' },
+    { id: 4, src: '/images/gallery-4.jpg', alt: 'Desert dunes' },
+    { id: 5, src: '/images/gallery-5.jpg', alt: 'City skyline' },
+  ];
+
+  return (
+    <Carousel
+      scrollSnapType="start"
+      scrollOffset={350}
+      duration={600}
+      scrollEasing="cubic-bezier(0.25, 1, 0.5, 1)"
+    >
+      {images.map((image) => (
+        <div key={image.id} className="carousel-image">
+          <img
+            src={image.src}
+            alt={image.alt}
+            loading="lazy"
+          />
+        </div>
+      ))}
+    </Carousel>
+  );
+}
+```
+
+```css Styles
+.carousel-image {
+  min-width: 320px;
+  height: 240px;
+  margin-right: 16px;
+  border-radius: 12px;
+  overflow: hidden;
+  scroll-snap-align: start;
+}
+
+.carousel-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+```
+</CodeGroup>
+
+<Note>
+The `scrollOffset` is set to `350` to scroll approximately one image at a time (slightly larger than the image width of 320px to account for margins).
+</Note>
+
+## Key Configuration
+
+<Steps>
+  <Step title="Set scrollSnapType">
+    Use `"start"` to align images to the left edge of the carousel when scrolling stops.
+    
+    ```tsx
+    scrollSnapType="start"
+    ```
+  </Step>
+  
+  <Step title="Configure scrollOffset">
+    Set `scrollOffset` to match your image width plus margins for one-at-a-time scrolling.
+    
+    ```tsx
+    scrollOffset={350} // 320px image + 30px total margin
+    ```
+  </Step>
+  
+  <Step title="Add scroll-snap-align to images">
+    Ensure each image container has the CSS property `scroll-snap-align: start` to work with the carousel's snap behavior.
+  </Step>
+</Steps>
+
+## Auto-Playing Image Carousel
+
+Add automatic sliding to create a slideshow effect:
+
+<CodeGroup>
+```tsx Component
+import { Carousel } from 'react-any-carousal';
+
+export default function AutoPlayImageCarousel() {
+  const images = [
+    { id: 1, src: '/images/hero-1.jpg', alt: 'Product showcase 1' },
+    { id: 2, src: '/images/hero-2.jpg', alt: 'Product showcase 2' },
+    { id: 3, src: '/images/hero-3.jpg', alt: 'Product showcase 3' },
+  ];
+
+  return (
+    <Carousel
+      scrollSnapType="start"
+      scrollOffset={800}
+      autoSlideInterval={4000}
+      duration={800}
+      scrollEasing="cubic-bezier(0.42, 0, 0.58, 1)"
+    >
+      {images.map((image) => (
+        <div key={image.id} className="hero-slide">
+          <img src={image.src} alt={image.alt} />
+          <div className="overlay">
+            <h2>Discover Our Collection</h2>
+            <button>Shop Now</button>
+          </div>
+        </div>
+      ))}
+    </Carousel>
+  );
+}
+```
+
+```css Styles
+.hero-slide {
+  min-width: 100%;
+  height: 500px;
+  position: relative;
+  scroll-snap-align: start;
+}
+
+.hero-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: white;
+  z-index: 1;
+}
+
+.overlay h2 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.overlay button {
+  padding: 12px 32px;
+  font-size: 1.1rem;
+  background: white;
+  color: #333;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.overlay button:hover {
+  transform: scale(1.05);
+}
+```
+</CodeGroup>
+
+<Tip>
+**Auto-sliding stops on user interaction!** When users click the navigation buttons, `autoSlideInterval` is automatically disabled to prevent interrupting manual browsing.
+</Tip>
+
+## Image Carousel with Center Snap
+
+Create a gallery where the focused image is centered:
+
+<CodeGroup>
+```tsx Component
+import { Carousel } from 'react-any-carousal';
+
+export default function CenteredImageCarousel() {
+  const images = [
+    { id: 1, src: '/images/portfolio-1.jpg', title: 'Urban Architecture' },
+    { id: 2, src: '/images/portfolio-2.jpg', title: 'Nature Photography' },
+    { id: 3, src: '/images/portfolio-3.jpg', title: 'Street Life' },
+    { id: 4, src: '/images/portfolio-4.jpg', title: 'Abstract Art' },
+  ];
+
+  return (
+    <Carousel
+      scrollSnapType="center"
+      scrollOffset={400}
+      duration={700}
+    >
+      {images.map((image) => (
+        <div key={image.id} className="centered-image">
+          <img src={image.src} alt={image.title} />
+          <p className="image-title">{image.title}</p>
+        </div>
+      ))}
+    </Carousel>
+  );
+}
+```
+
+```css Styles
+.centered-image {
+  min-width: 380px;
+  margin: 0 20px;
+  scroll-snap-align: center;
+}
+
+.centered-image img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s;
+}
+
+.centered-image:hover img {
+  transform: scale(1.02);
+}
+
+.image-title {
+  text-align: center;
+  margin-top: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+}
+```
+</CodeGroup>
+
+## Best Practices
+
+<Steps>
+  <Step title="Use lazy loading">
+    Add `loading="lazy"` to image tags to improve performance:
+    
+    ```tsx
+    <img src={image.src} alt={image.alt} loading="lazy" />
+    ```
+  </Step>
+  
+  <Step title="Provide meaningful alt text">
+    Always include descriptive alt text for accessibility and SEO.
+  </Step>
+  
+  <Step title="Optimize image sizes">
+    Use appropriately sized images (e.g., 800x600px for carousel images) to balance quality and loading speed.
+  </Step>
+  
+  <Step title="Match scrollOffset to image dimensions">
+    Set `scrollOffset` to your image width (+ margins) for predictable one-at-a-time scrolling.
+  </Step>
+</Steps>
+
+## Prop Reference
+
+| Prop | Value | Purpose |
+|------|-------|----------|
+| `scrollSnapType` | `"start"` or `"center"` | Controls where images align after scrolling |
+| `scrollOffset` | `350-800` | Distance to scroll per click (match to image width) |
+| `duration` | `600-800` | Animation duration in milliseconds |
+| `autoSlideInterval` | `3000-5000` | Auto-advance every N milliseconds (optional) |
+| `scrollEasing` | `"cubic-bezier(...)"` | Custom easing for smooth animations |
+
+<Tip>
+For responsive carousels, calculate `scrollOffset` dynamically based on container width using a `useEffect` hook.
+</Tip>
+
+## Common Variations
+
+### Thumbnail Gallery
+Set `scrollOffset` to a smaller value (150-200px) to show multiple small images at once.
+
+### Full-Width Hero
+Set image `min-width: 100%` and `scrollOffset` to container width for full-screen slides.
+
+### Pinterest-Style Grid
+Use `scrollSnapType="none"` for free-form scrolling without snapping.
+
+## Next Steps
+
+- [Custom Components](/examples/custom-components) - Use React components instead of images
+- [Full-Page Carousel](/examples/full-page-carousel) - Create full-width carousels
+- [API Reference](/api/carousel) - Complete prop documentation

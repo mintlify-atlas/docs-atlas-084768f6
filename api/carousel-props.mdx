@@ -1,0 +1,169 @@
+---
+title: 'CarouselProps'
+description: 'TypeScript interface for Carousel component props'
+---
+
+## Overview
+
+The `CarouselProps` type defines the complete interface for all props accepted by the [Carousel](/api/carousel) component.
+
+## Type Definition
+
+```typescript carousel-props.ts
+import { ReactNode } from "react";
+
+export type CarouselProps = {
+  /**
+   * Any iterable `ReactNode` element that the Carousel will display
+   */
+  children: ReactNode;
+
+  /**
+   * Specifies the theme of the carousel.
+   * This includes icon colors
+   */
+  theme?: Theme;
+
+  /**
+   * Options used for customising the navigation icons used in Carousel
+   */
+  iconOptions?: IconOptions;
+
+  /**
+   * Determines the snapping type for the carousel
+   *
+   * Accepted values are `"start" | "center" | "end" | "none"`
+   * Learn more about snapping here: https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-snap-type
+   */
+  scrollSnapType?: ScrollSnapOptions;
+
+  /**
+   * An offset of how much the Carousel will scroll its children,
+   *
+   * To scroll each child one at a time, set this to a value closer to the child's width
+   * To scroll the entire container, set this value to the container's width
+   *
+   * If `scrollSnapType` is enabled and `scrollOffset` is less than the child's width,
+   * the carousel will still show the next child
+   * according to the `scrollSnapType` value
+   */
+  scrollOffset?: number;
+
+  /**
+   * If set, then the carousel will scroll after a fixed duration defined by this variable.
+   * The duration is taken in milliseconds
+   */
+  autoSlideInterval?: number;
+
+  /**
+   * Easing function used for scrolling the carousel.
+   * Example Input: 'cubic-bezier(0.25, 1, 0.5, 1)'
+   * Note that the above easing function is used as the fallback value.
+   */
+  scrollEasing?: string;
+
+  /**
+   * Defines how much time each transition between children will take in milliseconds.
+   * Defaults to `600`
+   */
+  duration?: number;
+};
+```
+
+## Properties
+
+<ResponseField name="children" type="ReactNode" required>
+  Any iterable `ReactNode` element that the Carousel will display.
+</ResponseField>
+
+<ResponseField name="theme" type="Theme">
+  Specifies the theme of the carousel, including icon colors.
+  
+  See [Theme](/api/theme) for details.
+</ResponseField>
+
+<ResponseField name="iconOptions" type="IconOptions">
+  Options used for customizing the navigation icons used in the Carousel.
+  
+  See [IconOptions](/api/icon-options) for details.
+</ResponseField>
+
+<ResponseField name="scrollSnapType" type="ScrollSnapOptions">
+  Determines the snapping type for the carousel.
+  
+  See [ScrollSnapOptions](/api/scroll-snap-options) for details.
+</ResponseField>
+
+<ResponseField name="scrollOffset" type="number">
+  An offset of how much the Carousel will scroll its children in pixels.
+  
+  - To scroll each child one at a time, set this to a value closer to the child's width
+  - To scroll the entire container, set this value to the container's width
+  
+  <Note>
+    If `scrollSnapType` is enabled and `scrollOffset` is less than the child's width, the carousel will still show the next child according to the `scrollSnapType` value.
+  </Note>
+</ResponseField>
+
+<ResponseField name="autoSlideInterval" type="number">
+  If set, the carousel will automatically scroll after a fixed duration defined by this variable. The duration is taken in milliseconds.
+</ResponseField>
+
+<ResponseField name="scrollEasing" type="string">
+  Easing function used for scrolling the carousel.
+  
+  Example: `'cubic-bezier(0.25, 1, 0.5, 1)'`
+</ResponseField>
+
+<ResponseField name="duration" type="number">
+  Defines how much time each transition between children will take in milliseconds.
+  
+  Default: `600`
+</ResponseField>
+
+## Default Values
+
+The Carousel component uses the following default values:
+
+```typescript
+const defaultProps = {
+  theme: "light" as Theme,
+  iconOptions: {
+    icon: <span>&#8249;</span> as ReactNode,
+    iconStyles: { color: "whitesmoke", backgroundColor: "#333" },
+  } as IconOptions,
+  scrollSnapType: "start" as ScrollSnapOptions,
+  scrollOffset: 1000,
+  scrollEasing: "cubic-bezier(0.42, 0, 0.58, 1)",
+  duration: 600
+};
+```
+
+## Related Types
+
+- [Theme](/api/theme) - `"light" | "dark"`
+- [IconOptions](/api/icon-options) - Icon customization interface
+- [ScrollSnapOptions](/api/scroll-snap-options) - `"start" | "center" | "end" | "none"`
+
+## Usage Example
+
+```tsx
+import { Carousel, CarouselProps } from 'react-any-carousal';
+
+const carouselConfig: CarouselProps = {
+  children: (
+    <>
+      <div>Slide 1</div>
+      <div>Slide 2</div>
+    </>
+  ),
+  theme: 'dark',
+  scrollSnapType: 'center',
+  duration: 800,
+  autoSlideInterval: 3000
+};
+
+function App() {
+  return <Carousel {...carouselConfig} />;
+}
+```

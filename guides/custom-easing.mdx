@@ -1,0 +1,293 @@
+---
+title: 'Custom Easing'
+description: 'Create smooth, custom scroll animations with cubic bezier curves'
+---
+
+## Overview
+
+The `scrollEasing` prop allows you to customize the scroll animation using cubic bezier curves. This gives you fine-grained control over the acceleration and deceleration of scroll transitions.
+
+## The scrollEasing Prop
+
+**Type:** `string`  
+**Default:** `"cubic-bezier(0.42, 0, 0.58, 1)"`  
+**Format:** `"cubic-bezier(x1, y1, x2, y2)"`
+
+```tsx carousel-props.ts
+/**
+ * Easing function used for scrolling the carousel.
+ * Example Input: 'cubic-bezier(0.25, 1, 0.5, 1)'
+ * Note that the above easing function is used as the fallback value.
+ */
+scrollEasing?: string;
+```
+
+## How It Works
+
+AnyCarousel uses the [`bezier-easing`](https://github.com/gre/bezier-easing) library to convert cubic bezier strings into easing functions:
+
+```tsx carousel.tsx
+import bezierEasing from 'bezier-easing';
+
+const customScrollEasingFn = useMemo(() => {
+  const fallbackEasing = [0.25, 0.8, 0.5, 1];
+  const parsedEasing = scrollEasing?.match(/cubic-bezier\(([^)]+)\)/)?.[1];
+  const easingValues = parsedEasing?.split(',').map(Number);
+  const [x1, y1, x2, y2] = easingValues?.length === 4 ? easingValues : fallbackEasing;
+
+  try {
+    // The bezier-easing library call
+    return bezierEasing(x1 ?? 0.25, y1 ?? 0.8, x2 ?? 0.5, y2 ?? 1);
+  } catch (error) {
+    console.error("Invalid cubic-bezier values provided. Falling back to default easing.", error);
+    return bezierEasing(0.25, 0.8, 0.5, 1);
+  }
+}, [scrollEasing]);
+```
+
+The easing function is then applied during scroll animation:
+
+```tsx carousel.tsx
+const animateScrollBy = useCallback((container, offset, duration, easingFn) => {
+  const start = container.scrollLeft;
+  const startTime = performance.now();
+
+  const step = (currentTime) => {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = easingFn(progress); // Apply easing
+    container.scrollLeft = start + offset * eased;
+
+    if (progress < 1) requestAnimationFrame(step);
+  };
+
+  requestAnimationFrame(step);
+}, []);
+```
+
+<Info>
+  The easing function is memoized for performance, so it only recalculates when the `scrollEasing` prop changes.
+</Info>
+
+## Basic Usage
+
+```tsx
+import { Carousel } from "react-any-carousel";
+
+function App() {
+  return (
+    <Carousel scrollEasing="cubic-bezier(0.25, 1, 0.5, 1)">
+      <div className="card">Item 1</div>
+      <div className="card">Item 2</div>
+      <div className="card">Item 3</div>
+    </Carousel>
+  );
+}
+```
+
+## Understanding Cubic Bezier
+
+A cubic bezier curve is defined by four control points:
+
+```
+cubic-bezier(x1, y1, x2, y2)
+```
+
+- **x1, y1**: First control point (must be between 0 and 1 for x)
+- **x2, y2**: Second control point (must be between 0 and 1 for x)
+- **Start point**: Always `(0, 0)`
+- **End point**: Always `(1, 1)`
+
+<Note>
+  The **x-axis** represents time (0 = start, 1 = end), and the **y-axis** represents progress (0 = start position, 1 = end position).
+</Note>
+
+## Common Easing Patterns
+
+### Ease In (Slow Start)
+
+Animations that start slowly and accelerate:
+
+```tsx
+// Gentle ease in
+<Carousel scrollEasing="cubic-bezier(0.42, 0, 1, 1)">
+
+// Strong ease in
+<Carousel scrollEasing="cubic-bezier(0.55, 0.085, 0.68, 0.53)">
+
+// Cubic ease in
+<Carousel scrollEasing="cubic-bezier(0.32, 0, 0.67, 0)">
+```
+
+### Ease Out (Slow End)
+
+Animations that start quickly and decelerate:
+
+```tsx
+// Gentle ease out
+<Carousel scrollEasing="cubic-bezier(0, 0, 0.58, 1)">
+
+// Strong ease out
+<Carousel scrollEasing="cubic-bezier(0.25, 0.46, 0.45, 0.94)">
+
+// Cubic ease out
+<Carousel scrollEasing="cubic-bezier(0.33, 1, 0.68, 1)">
+```
+
+### Ease In-Out (Slow Start and End)
+
+Animations that accelerate and decelerate smoothly:
+
+```tsx
+// Gentle ease in-out (default)
+<Carousel scrollEasing="cubic-bezier(0.42, 0, 0.58, 1)">
+
+// Strong ease in-out
+<Carousel scrollEasing="cubic-bezier(0.65, 0.05, 0.36, 1)">
+
+// Cubic ease in-out
+<Carousel scrollEasing="cubic-bezier(0.65, 0, 0.35, 1)">
+```
+
+## Advanced Patterns
+
+### Anticipation
+
+Creates a slight backward motion before moving forward:
+
+```tsx
+<Carousel scrollEasing="cubic-bezier(0.68, -0.55, 0.27, 1.55)">
+  {/* items */}
+</Carousel>
+```
+
+<Warning>
+  Using y-values outside the 0-1 range creates "overshooting" effects. Use cautiously as extreme values can feel jarring.
+</Warning>
+
+### Bounce Effect
+
+Creates a bouncing motion at the end:
+
+```tsx
+<Carousel scrollEasing="cubic-bezier(0.34, 1.56, 0.64, 1)">
+  {/* items */}
+</Carousel>
+```
+
+### Sharp Transition
+
+Almost instant transition with minimal easing:
+
+```tsx
+<Carousel scrollEasing="cubic-bezier(0.9, 0, 0.1, 1)">
+  {/* items */}
+</Carousel>
+```
+
+## Combining with Duration
+
+Easing and duration work together to create the final animation feel:
+
+```tsx
+// Quick and snappy
+<Carousel
+  scrollEasing="cubic-bezier(0.68, -0.55, 0.27, 1.55)"
+  duration={400}
+>
+
+// Slow and smooth
+<Carousel
+  scrollEasing="cubic-bezier(0.25, 0.46, 0.45, 0.94)"
+  duration={1200}
+>
+
+// Fast ease-out
+<Carousel
+  scrollEasing="cubic-bezier(0.16, 1, 0.3, 1)"
+  duration={350}
+>
+```
+
+<Tip>
+  **General Guidelines:**
+  - Shorter durations (300-500ms) work well with simple easing curves
+  - Longer durations (800-1200ms) can handle more complex curves with anticipation or bounce
+  - For production UIs, subtle easing is usually better than dramatic effects
+</Tip>
+
+## Real-World Example
+
+Here's how the playground component uses custom easing:
+
+```tsx CarouselPlayground.tsx
+const [x1, setX1] = useState(0.79);
+const [y1, setY1] = useState(0.25);
+const [x2, setX2] = useState(0.5);
+const [y2, setY2] = useState(1);
+const [duration, setDuration] = useState(650);
+
+return (
+  <Carousel
+    scrollOffset={600}
+    scrollEasing={`cubic-bezier(${x1}, ${y1}, ${x2}, ${y2})`}
+    scrollSnapType="center"
+    duration={duration}
+  >
+    {largeImageList.map((item, i) => (
+      <PlaygroundImageComponent key={i} imageUrl={item.imageUrl} />
+    ))}
+  </Carousel>
+);
+```
+
+## Error Handling
+
+If invalid bezier values are provided, the carousel falls back to the default easing:
+
+```tsx carousel.tsx
+try {
+  return bezierEasing(x1 ?? 0.25, y1 ?? 0.8, x2 ?? 0.5, y2 ?? 1);
+} catch (error) {
+  console.error("Invalid cubic-bezier values provided. Falling back to default easing.", error);
+  return bezierEasing(0.25, 0.8, 0.5, 1);
+}
+```
+
+<Info>
+  The carousel will log an error to the console and continue working with the default easing if invalid values are provided.
+</Info>
+
+## Testing Your Easing
+
+Here are some tools to help you design custom easing curves:
+
+1. **[cubic-bezier.com](https://cubic-bezier.com)** - Interactive bezier curve editor
+2. **[easings.net](https://easings.net)** - Gallery of common easing functions
+3. **Chrome DevTools** - Has a built-in bezier curve editor in the animation inspector
+
+<Steps>
+  <Step title="Design your curve">
+    Use an online tool like cubic-bezier.com to visually design your curve
+  </Step>
+  <Step title="Copy the values">
+    Copy the `cubic-bezier(x1, y1, x2, y2)` string
+  </Step>
+  <Step title="Apply to carousel">
+    Pass the string to the `scrollEasing` prop
+  </Step>
+  <Step title="Test and refine">
+    Try different durations and adjust values until it feels right
+  </Step>
+</Steps>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Custom Icons" icon="icons" href="/guides/custom-icons">
+    Customize the appearance of navigation buttons
+  </Card>
+  <Card title="Auto Scroll" icon="play" href="/guides/auto-scroll">
+    Add automatic sliding with your custom easing
+  </Card>
+</CardGroup>

@@ -1,0 +1,178 @@
+---
+title: 'Carousel'
+description: 'Main Carousel component for displaying scrollable content'
+---
+
+## Overview
+
+The `Carousel` component is the primary component of the AnyCarousel library. It provides a flexible, accessible carousel with smooth scrolling animations, customizable navigation, and various snapping behaviors.
+
+## Import
+
+```tsx
+import { Carousel } from 'react-any-carousal';
+```
+
+## Basic Usage
+
+```tsx
+import { Carousel } from 'react-any-carousal';
+
+function App() {
+  return (
+    <Carousel>
+      <div>Slide 1</div>
+      <div>Slide 2</div>
+      <div>Slide 3</div>
+    </Carousel>
+  );
+}
+```
+
+## Props
+
+<ParamField path="children" type="ReactNode" required>
+  Any iterable `ReactNode` element that the Carousel will display. This is the content that will be scrollable within the carousel.
+</ParamField>
+
+<ParamField path="theme" type="Theme" default="light">
+  Specifies the theme of the carousel, including icon colors. Accepted values are `"light"` or `"dark"`.
+  
+  See [Theme](/api/theme) for more details.
+</ParamField>
+
+<ParamField path="iconOptions" type="IconOptions" default="{ icon: <span>&#8249;</span>, iconStyles: { color: 'whitesmoke', backgroundColor: '#333' } }">
+  Options used for customizing the navigation icons used in the Carousel.
+  
+  See [IconOptions](/api/icon-options) for more details.
+</ParamField>
+
+<ParamField path="scrollSnapType" type="ScrollSnapOptions" default="start">
+  Determines the snapping type for the carousel. Accepted values are `"start"` | `"center"` | `"end"` | `"none"`.
+  
+  Learn more about [scroll snapping](https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-snap-type).
+  
+  See [ScrollSnapOptions](/api/scroll-snap-options) for more details.
+</ParamField>
+
+<ParamField path="scrollOffset" type="number" default="1000">
+  An offset of how much the Carousel will scroll its children in pixels.
+  
+  - To scroll each child one at a time, set this to a value closer to the child's width
+  - To scroll the entire container, set this value to the container's width
+  
+  <Note>
+    If `scrollSnapType` is enabled and `scrollOffset` is less than the child's width, the carousel will still show the next child according to the `scrollSnapType` value.
+  </Note>
+</ParamField>
+
+<ParamField path="autoSlideInterval" type="number">
+  If set, the carousel will automatically scroll after a fixed duration defined by this variable. The duration is taken in milliseconds.
+  
+  <Warning>
+    Auto-scrolling will stop when the user manually interacts with the carousel navigation buttons.
+  </Warning>
+</ParamField>
+
+<ParamField path="scrollEasing" type="string" default="cubic-bezier(0.42, 0, 0.58, 1)">
+  Easing function used for scrolling the carousel. Must be a valid CSS cubic-bezier function.
+  
+  Example: `'cubic-bezier(0.25, 1, 0.5, 1)'`
+  
+  <Note>
+    If an invalid easing function is provided, the carousel will fall back to the default easing function.
+  </Note>
+</ParamField>
+
+<ParamField path="duration" type="number" default="600">
+  Defines how much time each transition between children will take in milliseconds.
+  
+  - Minimum: 100ms
+  - Maximum: 5000ms
+  - Default: 600ms
+  
+  <Note>
+    Values outside the min/max range will be automatically clamped to the nearest valid value.
+  </Note>
+</ParamField>
+
+## Advanced Examples
+
+### Custom Theme and Icons
+
+```tsx
+import { Carousel } from 'react-any-carousal';
+import { ChevronLeft } from './icons';
+
+function App() {
+  return (
+    <Carousel
+      theme="dark"
+      iconOptions={{
+        icon: <ChevronLeft />,
+        iconStyles: { color: '#fff', backgroundColor: 'rgba(0,0,0,0.5)' }
+      }}
+    >
+      <div>Slide 1</div>
+      <div>Slide 2</div>
+      <div>Slide 3</div>
+    </Carousel>
+  );
+}
+```
+
+### Auto-Sliding Carousel
+
+```tsx
+import { Carousel } from 'react-any-carousal';
+
+function App() {
+  return (
+    <Carousel
+      autoSlideInterval={3000}
+      scrollSnapType="center"
+      duration={800}
+    >
+      <div>Slide 1</div>
+      <div>Slide 2</div>
+      <div>Slide 3</div>
+    </Carousel>
+  );
+}
+```
+
+### Custom Scroll Behavior
+
+```tsx
+import { Carousel } from 'react-any-carousal';
+
+function App() {
+  return (
+    <Carousel
+      scrollOffset={500}
+      scrollEasing="cubic-bezier(0.25, 1, 0.5, 1)"
+      scrollSnapType="center"
+      duration={1000}
+    >
+      <div style={{ width: 500 }}>Slide 1</div>
+      <div style={{ width: 500 }}>Slide 2</div>
+      <div style={{ width: 500 }}>Slide 3</div>
+    </Carousel>
+  );
+}
+```
+
+## Accessibility
+
+The Carousel component includes built-in accessibility features:
+
+- The carousel container has `role="region"` and `aria-label="Carousel"`
+- Navigation buttons include appropriate `aria-label` attributes ("Previous item" and "Next item")
+- Navigation buttons are only visible when there is content to scroll in that direction
+
+## See Also
+
+- [CarouselProps](/api/carousel-props) - Complete TypeScript interface
+- [Theme](/api/theme) - Theme type documentation
+- [IconOptions](/api/icon-options) - Icon customization options
+- [ScrollSnapOptions](/api/scroll-snap-options) - Scroll snapping behavior

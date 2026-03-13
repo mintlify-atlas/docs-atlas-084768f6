@@ -1,0 +1,238 @@
+---
+title: 'IconOptions'
+description: 'Type for customizing carousel navigation icons'
+---
+
+## Overview
+
+The `IconOptions` type allows you to customize the navigation icons displayed on the left and right sides of the carousel.
+
+## Type Definition
+
+```typescript carousel-props.ts
+import { ReactNode } from "react";
+
+/**
+ * Options used for customising navigation icons used in carousel
+ * `icon`: A `ReactNode` that is going to be used as the icon element.
+ * `iconStyles`: A style object that will be passed as styles to the Icon Node
+ */
+export type IconOptions = {
+  icon?: ReactNode;
+  iconStyles?: any;
+};
+```
+
+## Properties
+
+<ResponseField name="icon" type="ReactNode">
+  A `ReactNode` that is going to be used as the icon element for both left and right navigation buttons.
+  
+  Can be any valid React element, including:
+  - HTML elements (e.g., `<span>`, `<div>`)
+  - Custom React components
+  - SVG icons
+  - Icon library components (e.g., Font Awesome, Material Icons)
+  
+  **Default:** `<span>&#8249;</span>` (a left-pointing chevron character)
+</ResponseField>
+
+<ResponseField name="iconStyles" type="any">
+  A style object that will be passed as styles to the icon element. Accepts any valid React CSS properties.
+  
+  **Default:** `{ color: "whitesmoke", backgroundColor: "#333" }`
+</ResponseField>
+
+## Default Configuration
+
+By default, the carousel uses the following icon configuration:
+
+```tsx
+const defaultIconOptions: IconOptions = {
+  icon: <span>&#8249;</span>,
+  iconStyles: { color: "whitesmoke", backgroundColor: "#333" }
+};
+```
+
+## Examples
+
+### Using HTML Entities
+
+```tsx
+import { Carousel } from 'react-any-carousal';
+
+function App() {
+  return (
+    <Carousel
+      iconOptions={{
+        icon: <span>&larr;</span>,
+        iconStyles: { color: '#000', backgroundColor: '#fff', fontSize: '20px' }
+      }}
+    >
+      <div>Slide 1</div>
+      <div>Slide 2</div>
+    </Carousel>
+  );
+}
+```
+
+### Using Custom SVG Icons
+
+```tsx
+import { Carousel } from 'react-any-carousal';
+
+const ChevronIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+  </svg>
+);
+
+function App() {
+  return (
+    <Carousel
+      iconOptions={{
+        icon: <ChevronIcon />,
+        iconStyles: {
+          color: '#333',
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          padding: '8px',
+          borderRadius: '50%'
+        }
+      }}
+    >
+      <div>Slide 1</div>
+      <div>Slide 2</div>
+    </Carousel>
+  );
+}
+```
+
+### Using Icon Libraries
+
+<CodeGroup>
+
+```tsx React Icons
+import { Carousel } from 'react-any-carousal';
+import { FiChevronLeft } from 'react-icons/fi';
+
+function App() {
+  return (
+    <Carousel
+      iconOptions={{
+        icon: <FiChevronLeft size={24} />,
+        iconStyles: {
+          color: 'white',
+          backgroundColor: 'rgba(0, 0, 0, 0.6)',
+          borderRadius: '50%',
+          padding: '12px'
+        }
+      }}
+    >
+      <div>Slide 1</div>
+      <div>Slide 2</div>
+    </Carousel>
+  );
+}
+```
+
+```tsx Material UI
+import { Carousel } from 'react-any-carousal';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+
+function App() {
+  return (
+    <Carousel
+      iconOptions={{
+        icon: <ChevronLeftIcon />,
+        iconStyles: {
+          color: '#1976d2',
+          backgroundColor: '#fff',
+          borderRadius: '4px',
+          boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+        }
+      }}
+    >
+      <div>Slide 1</div>
+      <div>Slide 2</div>
+    </Carousel>
+  );
+}
+```
+
+```tsx Lucide React
+import { Carousel } from 'react-any-carousal';
+import { ChevronLeft } from 'lucide-react';
+
+function App() {
+  return (
+    <Carousel
+      iconOptions={{
+        icon: <ChevronLeft size={20} />,
+        iconStyles: {
+          color: '#fff',
+          backgroundColor: '#000',
+          padding: '10px',
+          borderRadius: '8px'
+        }
+      }}
+    >
+      <div>Slide 1</div>
+      <div>Slide 2</div>
+    </Carousel>
+  );
+}
+```
+
+</CodeGroup>
+
+### Custom Styled Icons
+
+```tsx
+import { Carousel } from 'react-any-carousal';
+import styled from 'styled-components';
+
+const StyledArrow = styled.div`
+  width: 0;
+  height: 0;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-right: 10px solid white;
+`;
+
+function App() {
+  return (
+    <Carousel
+      iconOptions={{
+        icon: <StyledArrow />,
+        iconStyles: {
+          backgroundColor: 'rgba(0, 0, 0, 0.7)',
+          padding: '15px',
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }
+      }}
+    >
+      <div>Slide 1</div>
+      <div>Slide 2</div>
+    </Carousel>
+  );
+}
+```
+
+## Notes
+
+<Note>
+  The same icon is used for both left and right navigation buttons. The carousel automatically rotates the icon for the right button.
+</Note>
+
+<Note>
+  The `iconStyles` prop accepts any valid React CSS properties, allowing for full customization of the icon appearance.
+</Note>
+
+## See Also
+
+- [Carousel](/api/carousel) - Main component documentation
+- [CarouselProps](/api/carousel-props) - Complete props interface
+- [Theme](/api/theme) - Theme configuration

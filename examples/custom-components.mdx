@@ -1,0 +1,724 @@
+---
+title: "Custom Components"
+description: "Build carousels with complex React components like product cards, testimonials, and more"
+---
+
+# Custom Components in Carousel
+
+The Carousel component accepts any React elements as children, making it perfect for complex UI components like product cards, testimonials, blog posts, and more.
+
+## Product Card Carousel
+
+Create a beautiful e-commerce product carousel:
+
+<CodeGroup>
+```tsx Component
+import { Carousel } from 'react-any-carousal';
+
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  rating: number;
+  inStock: boolean;
+}
+
+export default function ProductCarousel() {
+  const products: Product[] = [
+    {
+      id: 1,
+      name: 'Wireless Headphones',
+      price: 99.99,
+      image: '/images/headphones.jpg',
+      rating: 4.5,
+      inStock: true,
+    },
+    {
+      id: 2,
+      name: 'Smart Watch Pro',
+      price: 299.99,
+      image: '/images/watch.jpg',
+      rating: 4.8,
+      inStock: true,
+    },
+    {
+      id: 3,
+      name: 'Laptop Stand',
+      price: 49.99,
+      image: '/images/stand.jpg',
+      rating: 4.3,
+      inStock: false,
+    },
+    {
+      id: 4,
+      name: 'Mechanical Keyboard',
+      price: 149.99,
+      image: '/images/keyboard.jpg',
+      rating: 4.7,
+      inStock: true,
+    },
+  ];
+
+  return (
+    <Carousel
+      scrollSnapType="start"
+      scrollOffset={320}
+      duration={600}
+      theme="light"
+    >
+      {products.map((product) => (
+        <ProductCard key={product.id} product={product} />
+      ))}
+    </Carousel>
+  );
+}
+
+function ProductCard({ product }: { product: Product }) {
+  return (
+    <div className="product-card">
+      <div className="product-image-container">
+        <img src={product.image} alt={product.name} />
+        {!product.inStock && (
+          <div className="out-of-stock-badge">Out of Stock</div>
+        )}
+      </div>
+      <div className="product-info">
+        <h3 className="product-name">{product.name}</h3>
+        <div className="product-rating">
+          {'★'.repeat(Math.floor(product.rating))}
+          {'☆'.repeat(5 - Math.floor(product.rating))}
+          <span className="rating-value">{product.rating}</span>
+        </div>
+        <div className="product-footer">
+          <span className="product-price">${product.price}</span>
+          <button
+            className="add-to-cart-btn"
+            disabled={!product.inStock}
+          >
+            {product.inStock ? 'Add to Cart' : 'Sold Out'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
+```css Styles
+.product-card {
+  min-width: 280px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-right: 20px;
+  scroll-snap-align: start;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.product-image-container {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  background: #f5f5f5;
+}
+
+.product-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.out-of-stock-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(220, 38, 38, 0.9);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.product-info {
+  padding: 16px;
+}
+
+.product-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: #1f2937;
+}
+
+.product-rating {
+  color: #fbbf24;
+  font-size: 1rem;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rating-value {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.product-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.product-price {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #059669;
+}
+
+.add-to-cart-btn {
+  padding: 8px 16px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.add-to-cart-btn:hover:not(:disabled) {
+  background: #2563eb;
+}
+
+.add-to-cart-btn:disabled {
+  background: #d1d5db;
+  cursor: not-allowed;
+}
+```
+</CodeGroup>
+
+<Tip>
+Set `scrollOffset` to match your card width (280px) plus margins (20px) for smooth one-card-at-a-time scrolling: `scrollOffset={300}`
+</Tip>
+
+## Testimonial Carousel
+
+Show customer testimonials with avatars and ratings:
+
+<CodeGroup>
+```tsx Component
+import { Carousel } from 'react-any-carousal';
+
+interface Testimonial {
+  id: number;
+  name: string;
+  role: string;
+  company: string;
+  avatar: string;
+  quote: string;
+  rating: number;
+}
+
+export default function TestimonialCarousel() {
+  const testimonials: Testimonial[] = [
+    {
+      id: 1,
+      name: 'Sarah Johnson',
+      role: 'Product Manager',
+      company: 'TechCorp',
+      avatar: '/images/avatar-1.jpg',
+      quote: 'This carousel component transformed our product showcase. The smooth animations and flexibility are exactly what we needed.',
+      rating: 5,
+    },
+    {
+      id: 2,
+      name: 'Michael Chen',
+      role: 'Lead Developer',
+      company: 'StartupXYZ',
+      avatar: '/images/avatar-2.jpg',
+      quote: 'Easy to integrate, highly customizable, and performs beautifully. The auto-slide feature works flawlessly.',
+      rating: 5,
+    },
+    {
+      id: 3,
+      name: 'Emily Rodriguez',
+      role: 'UX Designer',
+      company: 'DesignHub',
+      avatar: '/images/avatar-3.jpg',
+      quote: 'The snap-to-center feature creates such a polished user experience. Our clients love the smooth transitions.',
+      rating: 4,
+    },
+  ];
+
+  return (
+    <div className="testimonials-section">
+      <h2>What Our Users Say</h2>
+      <Carousel
+        scrollSnapType="center"
+        scrollOffset={500}
+        duration={700}
+        autoSlideInterval={5000}
+        scrollEasing="cubic-bezier(0.25, 1, 0.5, 1)"
+      >
+        {testimonials.map((testimonial) => (
+          <TestimonialCard key={testimonial.id} testimonial={testimonial} />
+        ))}
+      </Carousel>
+    </div>
+  );
+}
+
+function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
+  return (
+    <div className="testimonial-card">
+      <div className="quote-icon">❝</div>
+      <p className="testimonial-quote">{testimonial.quote}</p>
+      <div className="testimonial-rating">
+        {'★'.repeat(testimonial.rating)}{'☆'.repeat(5 - testimonial.rating)}
+      </div>
+      <div className="testimonial-author">
+        <img
+          src={testimonial.avatar}
+          alt={testimonial.name}
+          className="author-avatar"
+        />
+        <div className="author-info">
+          <div className="author-name">{testimonial.name}</div>
+          <div className="author-role">
+            {testimonial.role} at {testimonial.company}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
+```css Styles
+.testimonials-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 48px 24px;
+}
+
+.testimonials-section h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 48px;
+  color: #1f2937;
+}
+
+.testimonial-card {
+  min-width: 480px;
+  background: white;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  margin: 0 16px;
+  scroll-snap-align: center;
+  position: relative;
+}
+
+.quote-icon {
+  font-size: 4rem;
+  color: #e5e7eb;
+  line-height: 1;
+  margin-bottom: 16px;
+}
+
+.testimonial-quote {
+  font-size: 1.125rem;
+  line-height: 1.7;
+  color: #374151;
+  margin-bottom: 24px;
+  font-style: italic;
+}
+
+.testimonial-rating {
+  color: #fbbf24;
+  font-size: 1.25rem;
+  margin-bottom: 24px;
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-top: 24px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.author-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.author-name {
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 4px;
+}
+
+.author-role {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+```
+</CodeGroup>
+
+<Note>
+Using `scrollSnapType="center"` creates a focused view where the active testimonial is always centered, drawing attention to the content.
+</Note>
+
+## Blog Post Card Carousel
+
+Create a carousel for blog posts or articles:
+
+<CodeGroup>
+```tsx Component
+import { Carousel } from 'react-any-carousal';
+
+interface BlogPost {
+  id: number;
+  title: string;
+  excerpt: string;
+  author: string;
+  date: string;
+  category: string;
+  image: string;
+  readTime: string;
+}
+
+export default function BlogCarousel() {
+  const posts: BlogPost[] = [
+    {
+      id: 1,
+      title: 'Building Modern Web Applications',
+      excerpt: 'Learn how to build fast, scalable web applications using the latest technologies and best practices.',
+      author: 'Alex Turner',
+      date: '2024-01-15',
+      category: 'Development',
+      image: '/images/blog-1.jpg',
+      readTime: '5 min read',
+    },
+    {
+      id: 2,
+      title: 'Design Systems That Scale',
+      excerpt: 'Creating consistent, maintainable design systems for growing product teams.',
+      author: 'Jordan Lee',
+      date: '2024-01-12',
+      category: 'Design',
+      image: '/images/blog-2.jpg',
+      readTime: '8 min read',
+    },
+    {
+      id: 3,
+      title: 'Performance Optimization Tips',
+      excerpt: 'Practical techniques to improve your website performance and user experience.',
+      author: 'Sam Patel',
+      date: '2024-01-10',
+      category: 'Performance',
+      image: '/images/blog-3.jpg',
+      readTime: '6 min read',
+    },
+  ];
+
+  return (
+    <Carousel
+      scrollSnapType="start"
+      scrollOffset={380}
+      duration={650}
+      theme="light"
+    >
+      {posts.map((post) => (
+        <BlogCard key={post.id} post={post} />
+      ))}
+    </Carousel>
+  );
+}
+
+function BlogCard({ post }: { post: BlogPost }) {
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  };
+
+  return (
+    <article className="blog-card">
+      <div className="blog-image">
+        <img src={post.image} alt={post.title} />
+        <div className="blog-category">{post.category}</div>
+      </div>
+      <div className="blog-content">
+        <h3 className="blog-title">{post.title}</h3>
+        <p className="blog-excerpt">{post.excerpt}</p>
+        <div className="blog-meta">
+          <div className="blog-author">
+            <span className="author-name">{post.author}</span>
+            <span className="blog-date">{formatDate(post.date)}</span>
+          </div>
+          <span className="read-time">{post.readTime}</span>
+        </div>
+        <button className="read-more-btn">Read Article →</button>
+      </div>
+    </article>
+  );
+}
+```
+
+```css Styles
+.blog-card {
+  min-width: 360px;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  margin-right: 20px;
+  scroll-snap-align: start;
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+}
+
+.blog-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.blog-image {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+
+.blog-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+
+.blog-card:hover .blog-image img {
+  transform: scale(1.05);
+}
+
+.blog-category {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: #3b82f6;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.blog-content {
+  padding: 20px;
+}
+
+.blog-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 12px 0;
+  line-height: 1.4;
+}
+
+.blog-excerpt {
+  font-size: 0.9375rem;
+  color: #6b7280;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.blog-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 16px;
+  font-size: 0.875rem;
+}
+
+.blog-author {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.author-name {
+  font-weight: 600;
+  color: #374151;
+}
+
+.blog-date {
+  color: #9ca3af;
+}
+
+.read-time {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.read-more-btn {
+  width: 100%;
+  padding: 10px;
+  background: #f3f4f6;
+  color: #3b82f6;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.read-more-btn:hover {
+  background: #e5e7eb;
+}
+```
+</CodeGroup>
+
+## Key Best Practices
+
+<Steps>
+  <Step title="Match scrollOffset to component width">
+    Calculate the total width including margins:
+    
+    ```tsx
+    // For 360px card + 20px margin:
+    scrollOffset={380}
+    ```
+  </Step>
+  
+  <Step title="Add scroll-snap-align to each card">
+    Ensure smooth snapping behavior:
+    
+    ```css
+    .your-card {
+      scroll-snap-align: start; /* or center */
+    }
+    ```
+  </Step>
+  
+  <Step title="Use semantic HTML">
+    Choose appropriate elements (`<article>`, `<section>`) for better accessibility.
+  </Step>
+  
+  <Step title="Handle interactive elements">
+    Buttons and links inside carousel items work normally. No special handling needed.
+  </Step>
+</Steps>
+
+## Responsive Component Carousel
+
+Make your carousel components responsive:
+
+```tsx
+import { Carousel } from 'react-any-carousal';
+import { useState, useEffect } from 'react';
+
+export default function ResponsiveCarousel() {
+  const [scrollOffset, setScrollOffset] = useState(380);
+
+  useEffect(() => {
+    const updateOffset = () => {
+      if (window.innerWidth < 640) {
+        setScrollOffset(280); // Smaller cards on mobile
+      } else if (window.innerWidth < 1024) {
+        setScrollOffset(340); // Medium cards on tablet
+      } else {
+        setScrollOffset(380); // Full-size cards on desktop
+      }
+    };
+
+    updateOffset();
+    window.addEventListener('resize', updateOffset);
+    return () => window.removeEventListener('resize', updateOffset);
+  }, []);
+
+  return (
+    <Carousel
+      scrollSnapType="start"
+      scrollOffset={scrollOffset}
+      duration={600}
+    >
+      {/* Your components */}
+    </Carousel>
+  );
+}
+```
+
+<Tip>
+**Pro tip:** Use CSS custom properties to sync component width with JavaScript:
+
+```tsx
+<div style={{ '--card-width': `${cardWidth}px` } as React.CSSProperties}>
+  <Carousel scrollOffset={cardWidth + 20}>
+    {/* Cards use var(--card-width) in CSS */}
+  </Carousel>
+</div>
+```
+</Tip>
+
+## Prop Reference for Component Carousels
+
+| Prop | Recommended Value | Purpose |
+|------|-------------------|----------|
+| `scrollSnapType` | `"start"` | Align cards to the start (left edge) |
+| `scrollOffset` | Component width + margins | Scroll one component at a time |
+| `duration` | `600-700` | Smooth, not too fast transitions |
+| `theme` | `"light"` | Works well with card-based designs |
+| `autoSlideInterval` | `5000+` | Optional, 5+ seconds for reading content |
+
+## Common Patterns
+
+### Cards with Actions
+Buttons and links inside cards work normally. Click events are not affected by carousel scrolling.
+
+### Loading States
+Show skeleton cards while data loads:
+
+```tsx
+<Carousel scrollSnapType="start" scrollOffset={320}>
+  {loading
+    ? Array(3).fill(0).map((_, i) => <SkeletonCard key={i} />)
+    : data.map((item) => <Card key={item.id} data={item} />)
+  }
+</Carousel>
+```
+
+### Empty States
+Handle empty data gracefully:
+
+```tsx
+{items.length > 0 ? (
+  <Carousel>{/* items */}</Carousel>
+) : (
+  <div className="empty-state">No items to display</div>
+)}
+```
+
+## Next Steps
+
+- [Full-Page Carousel](/examples/full-page-carousel) - Create full-width carousels
+- [Image Carousel](/examples/image-carousel) - Optimize for images
+- [API Reference](/api/carousel) - Complete prop documentation

@@ -1,0 +1,353 @@
+---
+title: 'Auto Scroll'
+description: 'Configure automatic sliding at fixed intervals'
+---
+
+## Overview
+
+The `autoSlideInterval` prop enables automatic scrolling, making the carousel automatically advance to the next item at fixed intervals. This is perfect for hero sections, testimonials, or any content you want to showcase automatically.
+
+## The autoSlideInterval Prop
+
+**Type:** `number`  
+**Default:** `undefined` (disabled)  
+**Unit:** Milliseconds
+
+When set, the carousel will automatically scroll after the specified duration.
+
+```tsx carousel-props.ts
+/**
+ * If set, then the carousel will scroll after a fixed duration defined by this variable.
+ * The duration is taken in milliseconds
+ */
+autoSlideInterval?: number;
+```
+
+## Basic Usage
+
+```tsx
+import { Carousel } from "react-any-carousel";
+
+function App() {
+  return (
+    <Carousel autoSlideInterval={3000}>
+      <div className="card">Slide 1</div>
+      <div className="card">Slide 2</div>
+      <div className="card">Slide 3</div>
+    </Carousel>
+  );
+}
+```
+
+<Info>
+  In this example, the carousel will automatically advance to the next slide every 3 seconds (3000ms).
+</Info>
+
+## How It Works
+
+The auto-scroll feature uses a `setInterval` that triggers smooth animated scrolling:
+
+```tsx carousel.tsx
+const [autoScrollEnabled, setAutoScrollEnabled] = useState(autoSlideInterval ? true : false);
+
+useEffect(() => {
+  if (!autoScrollEnabled || !containerRef.current || !autoSlideInterval) return;
+
+  const interval = Number(autoSlideInterval);
+  if (isNaN(interval)) return;
+
+  // Use the memoized easing function
+  const easingFn = customScrollEasingFn;
+
+  const intervalId = setInterval(() => {
+    const container = containerRef.current;
+    if (container) {
+      // Check if we need to loop back to the start (simple carousel boundary check)
+      const isAtEnd = container.scrollLeft + container.clientWidth >= container.scrollWidth - 1;
+      const targetOffset = isAtEnd ? -container.scrollWidth : scrollOffset;
+
+      animateScrollBy(container, targetOffset, sanitizedDuration, easingFn);
+    }
+  }, interval);
+
+  return () => clearInterval(intervalId);
+}, [autoScrollEnabled, autoSlideInterval, scrollOffset, sanitizedDuration, customScrollEasingFn]);
+```
+
+### Key Behaviors
+
+1. **Automatic Looping**: When the carousel reaches the end, it automatically loops back to the start
+2. **Smooth Animation**: Uses the same easing function and duration as manual navigation
+3. **Clean Cleanup**: The interval is properly cleaned up when the component unmounts
+
+<Note>
+  The auto-scroll feature uses `requestAnimationFrame` for smooth, performant animations that respect your `scrollEasing` and `duration` settings.
+</Note>
+
+## Disabling on User Interaction
+
+Auto-scrolling automatically stops when the user manually navigates:
+
+```tsx carousel.tsx
+const triggerScroll = (direction: number) => {
+  setAutoScrollEnabled(false); // Stop auto-scrolling on user interaction
+  if (!containerRef.current) return;
+
+  const easing = customScrollEasingFn;
+  animateScrollBy(containerRef.current, (scrollOffset * direction), sanitizedDuration, easing);
+};
+```
+
+<Info>
+  When a user clicks the navigation buttons, auto-scroll is permanently disabled for that carousel instance. This prevents the carousel from fighting with user input.
+</Info>
+
+## Common Patterns
+
+### Slow Testimonials
+
+Show testimonials with a longer interval:
+
+```tsx
+<Carousel
+  autoSlideInterval={5000}
+  scrollSnapType="center"
+  scrollOffset={400}
+  duration={800}
+>
+  <TestimonialCard>"Great product!"</TestimonialCard>
+  <TestimonialCard>"Amazing service"</TestimonialCard>
+  <TestimonialCard>"Highly recommended"</TestimonialCard>
+</Carousel>
+```
+
+### Fast Image Slideshow
+
+Create a quick-paced slideshow:
+
+```tsx
+<Carousel
+  autoSlideInterval={2000}
+  scrollSnapType="start"
+  scrollOffset={600}
+  duration={500}
+  scrollEasing="cubic-bezier(0.25, 0.46, 0.45, 0.94)"
+>
+  {images.map((src, i) => (
+    <img key={i} src={src} alt={`Slide ${i}`} />
+  ))}
+</Carousel>
+```
+
+### Hero Banner
+
+Full-screen hero with slow transitions:
+
+```tsx
+<Carousel
+  autoSlideInterval={6000}
+  scrollSnapType="start"
+  scrollOffset={1920} // Full screen width
+  duration={1000}
+  scrollEasing="cubic-bezier(0.65, 0, 0.35, 1)"
+>
+  <HeroSlide background="/hero1.jpg">Welcome</HeroSlide>
+  <HeroSlide background="/hero2.jpg">Explore</HeroSlide>
+  <HeroSlide background="/hero3.jpg">Discover</HeroSlide>
+</Carousel>
+```
+
+## Combining with Other Features
+
+### With Custom Easing
+
+Auto-scroll respects your custom easing function:
+
+```tsx
+<Carousel
+  autoSlideInterval={4000}
+  scrollEasing="cubic-bezier(0.68, -0.55, 0.27, 1.55)"
+  duration={700}
+>
+  {/* items */}
+</Carousel>
+```
+
+The anticipation easing will apply to both manual clicks and automatic scrolling.
+
+### With Snap Scrolling
+
+Auto-scroll works seamlessly with snap points:
+
+```tsx
+<Carousel
+  autoSlideInterval={3500}
+  scrollSnapType="center"
+  scrollOffset={450}
+>
+  {/* items will snap to center automatically */}
+</Carousel>
+```
+
+### With Custom Icons
+
+Users can still manually navigate even with auto-scroll enabled:
+
+```tsx
+<Carousel
+  autoSlideInterval={4000}
+  iconOptions={{
+    icon: <ChevronIcon />,
+    iconStyles: { backgroundColor: "rgba(0,0,0,0.5)" },
+  }}
+>
+  {/* items */}
+</Carousel>
+```
+
+<Warning>
+  Remember that clicking navigation buttons will disable auto-scroll for that instance. If you need auto-scroll to resume after user interaction, you'll need to implement custom logic.
+</Warning>
+
+## Loop Behavior
+
+When the carousel reaches the end, it smoothly loops back to the start:
+
+```tsx carousel.tsx
+const isAtEnd = container.scrollLeft + container.clientWidth >= container.scrollWidth - 1;
+const targetOffset = isAtEnd ? -container.scrollWidth : scrollOffset;
+
+animateScrollBy(container, targetOffset, sanitizedDuration, easingFn);
+```
+
+### How Looping Works
+
+1. **During normal scrolling**: Uses the `scrollOffset` value to scroll forward
+2. **At the end**: Detects when `scrollLeft + clientWidth >= scrollWidth`
+3. **Loop back**: Scrolls the entire width backwards (`-container.scrollWidth`)
+
+<Info>
+  The loop animation uses the same duration and easing as normal scrolling, creating a seamless experience.
+</Info>
+
+## Best Practices
+
+<Steps>
+  <Step title="Choose appropriate intervals">
+    - Quick content (images): 2000-3000ms
+    - Medium content (cards): 3000-4000ms
+    - Long content (testimonials): 5000-7000ms
+  </Step>
+  <Step title="Match interval to content">
+    Give users enough time to read or view the content before it advances.
+  </Step>
+  <Step title="Consider accessibility">
+    Some users may find auto-scrolling distracting. Consider adding a pause button or disable auto-scroll on focus.
+  </Step>
+  <Step title="Test the experience">
+    Ensure the interval feels natural and isn't too fast or too slow for your content.
+  </Step>
+</Steps>
+
+<Tip>
+  A good rule of thumb: Your `autoSlideInterval` should be at least 3-4x your `duration` to avoid animations feeling rushed.
+</Tip>
+
+## Timing Examples
+
+```tsx
+// TOO FAST - Feels rushed
+<Carousel autoSlideInterval={1000} duration={800}>
+
+// GOOD - Balanced timing
+<Carousel autoSlideInterval={3000} duration={600}>
+
+// GOOD - Slow and smooth
+<Carousel autoSlideInterval={5000} duration={1000}>
+
+// GOOD - Quick and snappy
+<Carousel autoSlideInterval={2500} duration={400}>
+```
+
+## Accessibility Considerations
+
+When using auto-scroll, consider these accessibility best practices:
+
+1. **Pause on Hover**: Consider adding custom logic to pause on hover
+2. **Pause on Focus**: Pause when keyboard users focus on carousel content
+3. **Provide Controls**: Add play/pause buttons for user control
+4. **Reasonable Speed**: Don't make intervals too short
+5. **ARIA Attributes**: The carousel already includes `role="region"` and `aria-label="Carousel"`
+
+```tsx carousel.tsx
+<div role="region" aria-label="Carousel" className="carousel-wrapper">
+```
+
+<Warning>
+  **WCAG Guidelines**: Auto-advancing content can be problematic for users with cognitive disabilities. Consider implementing pause/stop controls if your content auto-advances more than 5 seconds.
+</Warning>
+
+## Complete Example
+
+Here's a full example of a testimonial carousel with auto-scroll:
+
+```tsx
+import { Carousel } from "react-any-carousel";
+
+function TestimonialCarousel() {
+  const testimonials = [
+    {
+      quote: "This product changed how we work!",
+      author: "Jane Doe",
+      company: "TechCorp",
+    },
+    {
+      quote: "Outstanding support and features.",
+      author: "John Smith",
+      company: "StartupCo",
+    },
+    {
+      quote: "Worth every penny. Highly recommended!",
+      author: "Sarah Johnson",
+      company: "Enterprise Inc",
+    },
+  ];
+
+  return (
+    <Carousel
+      autoSlideInterval={5000}
+      scrollSnapType="center"
+      scrollOffset={500}
+      duration={800}
+      scrollEasing="cubic-bezier(0.25, 0.46, 0.45, 0.94)"
+      iconOptions={{
+        icon: <span>‹</span>,
+        iconStyles: {
+          backgroundColor: "white",
+          color: "#333",
+          boxShadow: "0 2px 12px rgba(0,0,0,0.15)",
+        },
+      }}
+    >
+      {testimonials.map((testimonial, index) => (
+        <div key={index} className="testimonial-card">
+          <p className="quote">"{testimonial.quote}"</p>
+          <p className="author">{testimonial.author}</p>
+          <p className="company">{testimonial.company}</p>
+        </div>
+      ))}
+    </Carousel>
+  );
+}
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Custom Easing" icon="bezier-curve" href="/guides/custom-easing">
+    Fine-tune the animation feel of auto-scroll
+  </Card>
+  <Card title="Snap Scrolling" icon="magnet" href="/guides/snap-scrolling">
+    Control how items align during auto-scroll
+  </Card>
+</CardGroup>

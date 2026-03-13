@@ -1,0 +1,439 @@
+---
+title: 'Custom Icons'
+description: 'Customize navigation button icons and styling'
+---
+
+## Overview
+
+The `iconOptions` prop gives you complete control over the appearance of navigation buttons, including custom icon components and styling.
+
+## The iconOptions Prop
+
+**Type:** `IconOptions`  
+**Default:** Left chevron (`&#8249;`) with light background
+
+```tsx carousel-props.ts
+/**
+ * Options used for customising navigation icons used in carousel
+ * `icon`: A `ReactNode` that is going to be used as the icon element.
+ * `iconStyles`: A style object that will be passed as styles to the Icon Node
+ */
+export type IconOptions = {
+  icon?: ReactNode;
+  iconStyles?: any;
+};
+```
+
+### Default Values
+
+Here are the default icon options used by the carousel:
+
+```tsx carousel.tsx
+const defaultProps = {
+  theme: "light" as Theme,
+  iconOptions: {
+    icon: <span>&#8249;</span> as ReactNode,
+    iconStyles: { color: "whitesmoke", backgroundColor: "#333" },
+  } as IconOptions,
+  scrollSnapType: "start" as ScrollSnapOptions,
+  scrollOffset: DEFAULT_SCROLL_OFFSET,
+  scrollEasing: DEFAULT_EASING,
+  duration: DEFAULT_DURATION
+};
+```
+
+<Info>
+  The default icon is a simple left chevron (`‹`). The right navigation button automatically rotates this icon 180 degrees.
+</Info>
+
+## Basic Customization
+
+### Custom Colors
+
+Change icon colors using `iconStyles`:
+
+```tsx
+import { Carousel } from "react-any-carousel";
+
+function App() {
+  return (
+    <Carousel
+      iconOptions={{
+        iconStyles: {
+          color: "#ff6b6b",
+          backgroundColor: "white",
+        },
+      }}
+    >
+      <div className="card">Item 1</div>
+      <div className="card">Item 2</div>
+      <div className="card">Item 3</div>
+    </Carousel>
+  );
+}
+```
+
+### Custom Icon Element
+
+Replace the default chevron with your own icon:
+
+```tsx
+import { Carousel } from "react-any-carousel";
+
+function App() {
+  return (
+    <Carousel
+      iconOptions={{
+        icon: <span>→</span>,
+        iconStyles: {
+          color: "blue",
+          backgroundColor: "white",
+        },
+      }}
+    >
+      <div className="card">Item 1</div>
+      <div className="card">Item 2</div>
+    </Carousel>
+  );
+}
+```
+
+## Using Custom Icon Components
+
+You can pass any React component as the icon:
+
+### SVG Icon Example
+
+```tsx
+import { Carousel } from "react-any-carousel";
+
+function ChevronIcon({ color = "white" }) {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M15 18l-6-6 6-6"
+        stroke={color}
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function App() {
+  return (
+    <Carousel
+      iconOptions={{
+        icon: <ChevronIcon color="white" />,
+        iconStyles: {
+          backgroundColor: "black",
+        },
+      }}
+    >
+      {/* items */}
+    </Carousel>
+  );
+}
+```
+
+### Icon Library Example
+
+Using icons from popular libraries like React Icons:
+
+```tsx
+import { Carousel } from "react-any-carousel";
+import { MdArrowBack } from "react-icons/md";
+
+function App() {
+  return (
+    <Carousel
+      iconOptions={{
+        icon: <MdArrowBack size={24} />,
+        iconStyles: {
+          color: "white",
+          backgroundColor: "#4a5568",
+        },
+      }}
+    >
+      {/* items */}
+    </Carousel>
+  );
+}
+```
+
+## How Icons Are Rendered
+
+The carousel uses the `CircularButton` component to render navigation buttons:
+
+```tsx CircularButton.tsx
+export const CircularButton = ({
+  onClick,
+  icon,
+  className = "",
+  theme = 'light',
+  style = {}
+}: CircularButtonProps) => {
+  return (
+    <button
+      data-testid={`nav-icon-btn`}
+      onClick={onClick}
+      className={`circular-button ${className}`}
+      style={{
+        borderRadius: "50%",
+        width: "45px",
+        height: "45px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+        border: "none",
+        backgroundColor: theme == 'light' ? "white" : "black",
+        color: theme == 'dark' ? "white" : "black",
+        fontSize: "1.75rem",
+        cursor: "pointer",
+        ...style
+      }}
+    >
+      {icon}
+    </button>
+  );
+};
+```
+
+<Note>
+  The button is always rendered as a 45px × 45px circle with a drop shadow. Your custom styles from `iconStyles` are merged with these base styles.
+</Note>
+
+## Advanced Styling
+
+### Overriding Button Dimensions
+
+You can override the default button size:
+
+```tsx
+<Carousel
+  iconOptions={{
+    icon: <span>‹</span>,
+    iconStyles: {
+      width: "60px",
+      height: "60px",
+      fontSize: "2rem",
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      color: "white",
+    },
+  }}
+>
+  {/* items */}
+</Carousel>
+```
+
+### Adding Hover Effects
+
+While you can't add pseudo-classes directly, you can use CSS classes:
+
+```tsx
+// In your CSS file
+.custom-carousel-btn:hover {
+  backgroundColor: "#2563eb";
+  transform: "scale(1.1)";
+  transition: "all 0.2s";
+}
+
+// In your component
+<Carousel
+  iconOptions={{
+    icon: <span>‹</span>,
+    iconStyles: {
+      className: "custom-carousel-btn",
+      backgroundColor: "#3b82f6",
+      color: "white",
+    },
+  }}
+>
+```
+
+<Warning>
+  The `iconStyles` object is spread directly as inline styles, so pseudo-classes like `:hover` won't work. Use CSS classes instead for hover effects.
+</Warning>
+
+### Custom Border and Shadow
+
+```tsx
+<Carousel
+  iconOptions={{
+    icon: <span>‹</span>,
+    iconStyles: {
+      border: "2px solid #3b82f6",
+      boxShadow: "0 4px 12px rgba(59, 130, 246, 0.3)",
+      backgroundColor: "white",
+      color: "#3b82f6",
+    },
+  }}
+>
+```
+
+## Real-World Example
+
+Here's how the playground component customizes icons:
+
+```tsx CarouselPlayground.tsx
+import { ChevronIcon } from "./components/ChevronIcon";
+
+<Carousel
+  iconOptions={{
+    icon: <ChevronIcon color="white" />,
+    iconStyles: {
+      backgroundColor: "black",
+      color: "white",
+    },
+  }}
+  scrollOffset={600}
+  scrollEasing={`cubic-bezier(${x1}, ${y1}, ${x2}, ${y2})`}
+  scrollSnapType="center"
+  duration={duration}
+>
+  {largeImageList.map((item, i) => (
+    <PlaygroundImageComponent key={i} imageUrl={item.imageUrl} />
+  ))}
+</Carousel>
+```
+
+## Icon Rotation
+
+The right navigation button automatically rotates the icon 180 degrees:
+
+```css carousel.css
+.nav-button.right {
+  right: 0.75rem;
+  rotate: 180deg;
+}
+```
+
+<Tip>
+  Design your icons to point **left** by default. The carousel will automatically rotate the right button 180 degrees.
+</Tip>
+
+## Positioning
+
+Navigation buttons are positioned absolutely within the carousel wrapper:
+
+```css carousel.css
+.nav-button {
+  position: absolute;
+  z-index: 1;
+}
+
+.nav-button.left {
+  left: 0.75rem;
+}
+
+.nav-button.right {
+  right: 0.75rem;
+  rotate: 180deg;
+}
+```
+
+The buttons are positioned `0.75rem` (12px) from the edges by default. You cannot customize this positioning through props, but you can override it with CSS:
+
+```css
+/* Custom positioning */
+.carousel-wrapper .nav-button.left {
+  left: 2rem;
+}
+
+.carousel-wrapper .nav-button.right {
+  right: 2rem;
+}
+```
+
+## Conditional Icon Display
+
+The carousel automatically shows/hides navigation buttons based on scroll position:
+
+```tsx carousel.tsx
+const [showLeft, setShowLeft] = useState(false);
+const [showRight, setShowRight] = useState(true);
+
+const handleScroll = () => {
+  if (!containerRef.current) return;
+  const { scrollLeft, scrollWidth, clientWidth } = containerRef.current;
+
+  setShowLeft(scrollLeft > 0);
+  setShowRight(scrollLeft + clientWidth < scrollWidth - 1);
+};
+```
+
+<Info>
+  Navigation buttons automatically hide when there's no more content in that direction. This provides clear visual feedback about the carousel's scroll position.
+</Info>
+
+## Complete Examples
+
+### Minimal Style
+
+```tsx
+<Carousel
+  iconOptions={{
+    icon: <span>‹</span>,
+    iconStyles: {
+      backgroundColor: "transparent",
+      color: "#333",
+      fontSize: "3rem",
+      boxShadow: "none",
+    },
+  }}
+>
+```
+
+### Bold and Colorful
+
+```tsx
+<Carousel
+  iconOptions={{
+    icon: <span>▶</span>,
+    iconStyles: {
+      backgroundColor: "#ec4899",
+      color: "white",
+      fontSize: "1.5rem",
+      width: "50px",
+      height: "50px",
+      border: "3px solid white",
+    },
+  }}
+>
+```
+
+### Glassmorphism Style
+
+```tsx
+<Carousel
+  iconOptions={{
+    icon: <span>‹</span>,
+    iconStyles: {
+      backgroundColor: "rgba(255, 255, 255, 0.1)",
+      backdropFilter: "blur(10px)",
+      color: "white",
+      border: "1px solid rgba(255, 255, 255, 0.2)",
+      boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
+    },
+  }}
+>
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Theming" icon="palette" href="/guides/theming">
+    Learn how the theme prop affects default icon colors
+  </Card>
+  <Card title="Basic Usage" icon="rocket" href="/guides/basic-usage">
+    Return to basic usage guide
+  </Card>
+</CardGroup>

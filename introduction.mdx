@@ -1,0 +1,94 @@
+---
+title: Introduction
+description: A highly customizable, smooth, and responsive React carousel library with custom easing and advanced animations.
+---
+
+<img
+  className="block"
+  src="/images/hero-light.svg"
+  alt="AnyCarousel Hero Light"
+/>
+
+## Welcome to AnyCarousel
+
+AnyCarousel is a powerful, highly adaptable carousel component for React that covers real use cases like custom content, snapping, auto scroll, and responsive layout. It works for all kinds of content—images, videos, and custom components.
+
+Built with performance and flexibility in mind, AnyCarousel offers custom easing using bezier curves for smooth, professional animations that elevate your user experience.
+
+## Key Features
+
+<CardGroup cols={2}>
+  <Card title="Custom Easing" icon="wave-pulse" href="/guides/custom-easing">
+    Fine-tune scroll animations with bezier curves for smooth, professional transitions
+  </Card>
+  <Card title="Auto-Scroll" icon="play" href="/guides/auto-scroll">
+    Automatic sliding with customizable intervals for hands-free presentations
+  </Card>
+  <Card title="Touch Gestures" icon="hand-pointer" href="/guides/basic-usage">
+    Smooth swipe gestures for mobile and tablet devices
+  </Card>
+  <Card title="Custom Icons" icon="icons" href="/guides/custom-icons">
+    Replace default navigation icons with your own components and styles
+  </Card>
+  <Card title="Snap Scrolling" icon="magnet" href="/guides/snap-scrolling">
+    Control how items snap into place with start, center, end, or no snapping
+  </Card>
+  <Card title="Theming Support" icon="palette" href="/guides/theming">
+    Built-in light and dark themes that match your application
+  </Card>
+</CardGroup>
+
+## What Makes AnyCarousel Different?
+
+<AccordionGroup>
+  <Accordion title="Lightweight & Minimalistic">
+    Zero bloat, just the essentials. AnyCarousel is built to be fast and efficient without unnecessary dependencies.
+  </Accordion>
+  
+  <Accordion title="Content Agnostic">
+    Works seamlessly with any content type—images, videos, custom React components, or complex UI elements.
+  </Accordion>
+  
+  <Accordion title="Desktop & Mobile Support">
+    Full support for Shift + Scroll on desktop, two-finger gestures on touchpads, and swipe gestures on mobile devices.
+  </Accordion>
+  
+  <Accordion title="Developer Friendly">
+    Clean API with TypeScript support, comprehensive props, and intuitive configuration options.
+  </Accordion>
+</AccordionGroup>
+
+## Quick Example
+
+Here's how simple it is to get started:
+
+```tsx
+import { Carousel } from "react-any-carousel";
+
+function App() {
+  return (
+    <Carousel scrollSnapType="center" scrollOffset={300} duration={600}>
+      <div className="card">Item 1</div>
+      <div className="card">Item 2</div>
+      <div className="card">Item 3</div>
+    </Carousel>
+  );
+}
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Installation" icon="download" href="/installation">
+    Install AnyCarousel in your React project
+  </Card>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Build your first carousel in minutes
+  </Card>
+  <Card title="API Reference" icon="code" href="/api/carousel">
+    Explore all props and configuration options
+  </Card>
+  <Card title="Examples" icon="sparkles" href="/examples/image-carousel">
+    See real-world usage examples
+  </Card>
+</CardGroup>

@@ -1,0 +1,81 @@
+---
+title: Installation
+description: Install react-any-carousel in your React project
+---
+
+## Installation
+
+Get started with react-any-carousel by installing it in your React project using your preferred package manager.
+
+<Steps>
+  <Step title="Install the package">
+    Choose your package manager and install react-any-carousel:
+
+    <CodeGroup>
+      ```bash npm
+      npm install react-any-carousel
+      ```
+
+      ```bash yarn
+      yarn add react-any-carousel
+      ```
+
+      ```bash pnpm
+      pnpm add react-any-carousel
+      ```
+    </CodeGroup>
+  </Step>
+
+  <Step title="Verify peer dependencies">
+    The library requires React as a peer dependency. Make sure you have the following installed:
+
+    - **React**: `^19.0.0` or higher
+    - **React DOM**: `^19.0.0` or higher
+
+    <Note>
+      react-any-carousel is compatible with React 19 and later versions. If you're using an older version of React, you may need to upgrade your project.
+    </Note>
+
+    Check your `package.json` to verify your React version:
+
+    ```json package.json
+    {
+      "dependencies": {
+        "react": "^19.2.1",
+        "react-dom": "^19.2.1"
+      }
+    }
+    ```
+  </Step>
+
+  <Step title="Import the component">
+    Once installed, you can import the Carousel component in your React files:
+
+    ```tsx
+    import { Carousel } from "react-any-carousel";
+    ```
+
+    You can also import the TypeScript types if needed:
+
+    ```tsx
+    import { Carousel, CarouselProps, IconOptions, Theme } from "react-any-carousel";
+    ```
+  </Step>
+</Steps>
+
+## Package Details
+
+The library is lightweight and comes with minimal dependencies:
+
+- **Main dependency**: `bezier-easing` for smooth scroll animations
+- **Bundle size**: Optimized for minimal footprint
+- **TypeScript support**: Full type definitions included
+- **Module formats**: ESM and CommonJS supported
+
+<Note>
+  react-any-carousel uses native CSS scroll-snap and smooth scrolling features, ensuring excellent performance without heavy JavaScript computations.
+</Note>
+
+## Next Steps
+
+Now that you have react-any-carousel installed, check out the [Quickstart](/quickstart) guide to build your first carousel.

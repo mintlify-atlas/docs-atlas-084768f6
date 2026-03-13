@@ -1,0 +1,530 @@
+---
+title: 'Snap Scrolling'
+description: 'Control how carousel items align with CSS scroll-snap'
+---
+
+## Overview
+
+Snap scrolling makes carousel items automatically align to specific positions when scrolling. AnyCarousel uses CSS scroll-snap for smooth, native snap behavior that works across all devices.
+
+## The scrollSnapType Prop
+
+**Type:** `"start" | "center" | "end" | "none"`  
+**Default:** `"start"`
+
+Determines how items align when they snap into view.
+
+```tsx carousel-props.ts
+/**
+ * Learn more about snapping here: https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-snap-type
+ */
+export type ScrollSnapOptions = "start" | "center" | "end" | "none";
+```
+
+```tsx carousel-props.ts
+/**
+ * Determines the snapping type for the carousel
+ *
+ * Accepted values are `"start" | "center" | "end" | "none"`
+ * Learn more about snapping here: https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-snap-type
+ */
+scrollSnapType?: ScrollSnapOptions;
+```
+
+## How It Works
+
+The carousel applies the snap type directly to the CSS `scroll-snap-type` property:
+
+```tsx carousel.tsx
+<div
+  className="carousel-container"
+  ref={containerRef}
+  onScroll={handleScroll}
+  style={{ scrollSnapType: `x ${scrollSnapType}` }}
+>
+  {children}
+</div>
+```
+
+Children are automatically configured with `scroll-snap-align`:
+
+```css carousel.css
+.carousel-container > * {
+  flex: 0 0 auto;
+  scroll-snap-align: center;
+}
+```
+
+<Info>
+  The carousel uses the CSS Scroll Snap specification, which is supported by all modern browsers and provides native, hardware-accelerated snapping.
+</Info>
+
+## Snap Types Explained
+
+### "start" - Align to Container Start
+
+Items snap to the left edge of the container:
+
+```tsx
+<Carousel scrollSnapType="start">
+  <div className="card">Item 1</div>
+  <div className="card">Item 2</div>
+  <div className="card">Item 3</div>
+</Carousel>
+```
+
+**Best for:**
+- Lists of cards or items
+- Gallery layouts
+- Product carousels
+- Mobile-first designs
+
+<Tip>
+  This is the default behavior and works well for most use cases.
+</Tip>
+
+### "center" - Align to Viewport Center
+
+Items snap to the center of the visible area:
+
+```tsx
+<Carousel scrollSnapType="center">
+  <div className="card">Item 1</div>
+  <div className="card">Item 2</div>
+  <div className="card">Item 3</div>
+</Carousel>
+```
+
+**Best for:**
+- Featured content
+- Hero images
+- Testimonials
+- Spotlight effects
+- When you want items visually centered
+
+### "end" - Align to Container End
+
+Items snap to the right edge of the container:
+
+```tsx
+<Carousel scrollSnapType="end">
+  <div className="card">Item 1</div>
+  <div className="card">Item 2</div>
+  <div className="card">Item 3</div>
+</Carousel>
+```
+
+**Best for:**
+- Right-to-left (RTL) layouts
+- Special design requirements
+- Less common but available when needed
+
+### "none" - Disable Snapping
+
+Free-form scrolling without snap points:
+
+```tsx
+<Carousel scrollSnapType="none">
+  <div className="card">Item 1</div>
+  <div className="card">Item 2</div>
+  <div className="card">Item 3</div>
+</Carousel>
+```
+
+**Best for:**
+- Continuous scrolling experiences
+- Timeline layouts
+- Long horizontal content
+- When you want complete scroll freedom
+
+<Note>
+  With `scrollSnapType="none"`, the carousel still supports navigation buttons and smooth scrolling, but items won't automatically align to positions.
+</Note>
+
+## Interaction with scrollOffset
+
+The `scrollSnapType` and `scrollOffset` props work together:
+
+```tsx carousel-props.ts
+/**
+ * An offset of how much the Carousel will scroll its children,
+ *
+ * To scroll each child one at a time, set this to a value closer to the child's width
+ * To scroll the entire container, set this value to the container's width
+ *
+ * If `scrollSnapType` is enabled and `scrollOffset` is less than the child's width,
+ * the carousel will still show the next child
+ * according to the `scrollSnapType` value
+ */
+scrollOffset?: number;
+```
+
+### Example: Snap Overrides Small Offsets
+
+```tsx
+// Even with a small scroll offset...
+<Carousel scrollSnapType="center" scrollOffset={100}>
+  <div style={{ width: "400px" }}>Item 1</div>
+  <div style={{ width: "400px" }}>Item 2</div>
+</Carousel>
+```
+
+When you click the navigation button:
+1. Carousel scrolls 100px (the `scrollOffset` value)
+2. CSS snap activates and pulls the next item to center
+3. Result: Next item is centered, regardless of the small offset
+
+<Info>
+  Snap points take precedence after scrolling completes. This ensures items always land in the correct position.
+</Info>
+
+## Visual Examples
+
+### Start Alignment
+
+```
+┌─────────────────────────┐
+│ [Item 1] [Item 2] [Item │ 3]
+│ ▲                       │
+│ Snaps here              │
+└─────────────────────────┘
+```
+
+### Center Alignment
+
+```
+┌─────────────────────────┐
+│     [Item 1] [Item 2]   │ [Item 3]
+│          ▲              │
+│     Snaps here          │
+└─────────────────────────┘
+```
+
+### End Alignment
+
+```
+┌─────────────────────────┐
+│ [Item 1  [Item 2] [Item │ 3]
+│                       ▲ │
+│              Snaps here │
+└─────────────────────────┘
+```
+
+## Real-World Examples
+
+### Image Gallery (Center Snap)
+
+```tsx
+import { Carousel } from "react-any-carousel";
+
+function ImageGallery() {
+  const images = [
+    "/gallery/image1.jpg",
+    "/gallery/image2.jpg",
+    "/gallery/image3.jpg",
+  ];
+
+  return (
+    <Carousel
+      scrollSnapType="center"
+      scrollOffset={500}
+      duration={700}
+    >
+      {images.map((src, index) => (
+        <img
+          key={index}
+          src={src}
+          alt={`Gallery ${index + 1}`}
+          style={{
+            width: "500px",
+            height: "400px",
+            objectFit: "cover",
+            borderRadius: "8px",
+          }}
+        />
+      ))}
+    </Carousel>
+  );
+}
+```
+
+### Product Cards (Start Snap)
+
+```tsx
+import { Carousel } from "react-any-carousel";
+
+function ProductCarousel() {
+  return (
+    <Carousel
+      scrollSnapType="start"
+      scrollOffset={320}
+      duration={600}
+    >
+      {products.map((product) => (
+        <div
+          key={product.id}
+          style={{
+            width: "300px",
+            padding: "1rem",
+            border: "1px solid #ddd",
+            borderRadius: "8px",
+          }}
+        >
+          <img src={product.image} alt={product.name} />
+          <h3>{product.name}</h3>
+          <p>${product.price}</p>
+        </div>
+      ))}
+    </Carousel>
+  );
+}
+```
+
+### Timeline (No Snap)
+
+```tsx
+import { Carousel } from "react-any-carousel";
+
+function Timeline() {
+  return (
+    <Carousel
+      scrollSnapType="none"
+      scrollOffset={400}
+      duration={500}
+    >
+      {events.map((event) => (
+        <div key={event.id} className="timeline-event">
+          <span className="date">{event.date}</span>
+          <p>{event.description}</p>
+        </div>
+      ))}
+    </Carousel>
+  );
+}
+```
+
+## Combining with Auto-Scroll
+
+Snap scrolling works seamlessly with auto-scroll:
+
+```tsx
+<Carousel
+  scrollSnapType="center"
+  autoSlideInterval={4000}
+  scrollOffset={500}
+  duration={800}
+>
+  {slides.map((slide) => (
+    <div key={slide.id}>{slide.content}</div>
+  ))}
+</Carousel>
+```
+
+Each auto-advance will:
+1. Scroll by the `scrollOffset` amount
+2. Snap to the nearest item based on `scrollSnapType`
+3. Wait for `autoSlideInterval` before advancing again
+
+## Browser Support
+
+CSS Scroll Snap is supported by all modern browsers:
+
+- ✅ Chrome 69+
+- ✅ Firefox 68+
+- ✅ Safari 11+
+- ✅ Edge 79+
+- ✅ iOS Safari 11+
+- ✅ Chrome Android 69+
+
+<Info>
+  The carousel uses CSS scroll-snap, which is hardware-accelerated and provides the smoothest possible experience on all devices.
+</Info>
+
+## CSS Implementation Details
+
+The carousel applies these CSS properties:
+
+```css carousel.css
+.carousel-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 1rem;
+  padding-inline: 1rem;
+
+  /* Hide scrollbar */
+  -ms-overflow-style: none;
+  overflow: -moz-scrollbars-none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.carousel-container > * {
+  flex: 0 0 auto;
+  scroll-snap-align: center;
+}
+```
+
+The `scroll-snap-type` is applied dynamically:
+
+```tsx carousel.tsx
+<div
+  className="carousel-container"
+  style={{ scrollSnapType: `x ${scrollSnapType}` }}
+>
+```
+
+This translates to CSS like:
+```css
+scroll-snap-type: x start;  /* or center, end, none */
+```
+
+## Touch and Gesture Support
+
+Snap scrolling works automatically with:
+
+- **Touch gestures** on mobile devices
+- **Two-finger scroll** on touchpads
+- **Mouse drag** (browser-dependent)
+- **Navigation buttons** via the carousel
+
+<Tip>
+  CSS scroll-snap respects all native scrolling inputs, making your carousel work seamlessly across all devices and input methods.
+</Tip>
+
+## Performance Considerations
+
+CSS scroll-snap is highly performant because:
+
+1. **Native Implementation**: Runs in the browser's compositor thread
+2. **Hardware Accelerated**: Uses GPU acceleration when available
+3. **No JavaScript**: Snap behavior doesn't require JS calculations
+4. **Smooth on Mobile**: Respects native touch scrolling physics
+
+```tsx carousel.tsx
+// The carousel only uses JS for animated button clicks
+const animateScrollBy = useCallback((container, offset, duration, easingFn) => {
+  const start = container.scrollLeft;
+  const startTime = performance.now();
+
+  const step = (currentTime) => {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = easingFn(progress);
+    container.scrollLeft = start + offset * eased;
+
+    if (progress < 1) requestAnimationFrame(step);
+  };
+
+  requestAnimationFrame(step);
+}, []);
+```
+
+<Note>
+  Manual touch/swipe scrolling uses pure CSS with no JavaScript overhead. JS animations only run for button clicks.
+</Note>
+
+## Common Patterns
+
+### Full-Width Slides
+
+```tsx
+<Carousel
+  scrollSnapType="start"
+  scrollOffset={window.innerWidth}
+  duration={600}
+>
+  {slides.map((slide) => (
+    <div style={{ width: "100vw" }}>{slide.content}</div>
+  ))}
+</Carousel>
+```
+
+### Partial Peek (Show Next Item)
+
+```tsx
+<Carousel
+  scrollSnapType="start"
+  scrollOffset={350}
+  duration={600}
+>
+  {items.map((item) => (
+    <div style={{ width: "300px" }}>{item.content}</div>
+  ))}
+</Carousel>
+```
+
+With a container showing ~400px width, this creates a "peek" effect where you can see part of the next item.
+
+### Multiple Items Per View
+
+```tsx
+<Carousel
+  scrollSnapType="start"
+  scrollOffset={960} // Scroll 3 items at once
+  duration={700}
+>
+  {items.map((item) => (
+    <div style={{ width: "300px" }}>{item.content}</div>
+  ))}
+</Carousel>
+```
+
+## Troubleshooting
+
+### Items Not Snapping
+
+Ensure your items have explicit widths:
+
+```tsx
+// ❌ Wrong - no width
+<Carousel scrollSnapType="center">
+  <div>Item</div>
+</Carousel>
+
+// ✅ Correct - explicit width
+<Carousel scrollSnapType="center">
+  <div style={{ width: "400px" }}>Item</div>
+</Carousel>
+```
+
+### Snapping Feels Wrong
+
+Make sure your `scrollOffset` makes sense for your layout:
+
+```tsx
+// Item width: 400px
+// Good scrollOffset values: 400, 800, 1200 (multiples of item width)
+<Carousel scrollSnapType="center" scrollOffset={400}>
+```
+
+### Items Snap to Wrong Position
+
+Check that all items have consistent widths:
+
+```tsx
+// ❌ Inconsistent widths confuse snapping
+<Carousel scrollSnapType="center">
+  <div style={{ width: "300px" }}>Item 1</div>
+  <div style={{ width: "500px" }}>Item 2</div>
+</Carousel>
+
+// ✅ Consistent widths work better
+<Carousel scrollSnapType="center">
+  <div style={{ width: "400px" }}>Item 1</div>
+  <div style={{ width: "400px" }}>Item 2</div>
+</Carousel>
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Basic Usage" icon="rocket" href="/guides/basic-usage">
+    Return to basic carousel usage patterns
+  </Card>
+  <Card title="Auto Scroll" icon="play" href="/guides/auto-scroll">
+    Add automatic scrolling with snap points
+  </Card>
+</CardGroup>

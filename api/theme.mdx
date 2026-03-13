@@ -1,0 +1,176 @@
+---
+title: 'Theme'
+description: 'Type for carousel theme configuration'
+---
+
+## Overview
+
+The `Theme` type defines the color scheme for the carousel component, affecting the appearance of navigation icons and other UI elements.
+
+## Type Definition
+
+```typescript carousel-props.ts
+/**
+ * Accepts either `"light"` or `"dark"`
+ * Default value is `"light"`
+ */
+export type Theme = "light" | "dark";
+```
+
+## Values
+
+<ResponseField name="light" type="string">
+  Light theme for the carousel. This is the default theme.
+  
+  Best used on light backgrounds or when you want navigation controls to have a lighter appearance.
+</ResponseField>
+
+<ResponseField name="dark" type="string">
+  Dark theme for the carousel.
+  
+  Best used on dark backgrounds or when you want navigation controls to have a darker appearance.
+</ResponseField>
+
+## Default Value
+
+The default theme is `"light"`.
+
+```tsx
+const defaultTheme: Theme = "light";
+```
+
+## What Theme Affects
+
+The `theme` prop primarily affects:
+
+- **Navigation icon colors** - The color scheme of the left and right navigation buttons
+- **Button backgrounds** - The background styling of navigation controls
+- **Overall visual consistency** - Ensures the carousel matches your application's color scheme
+
+<Note>
+  You can further customize the appearance of navigation icons using the [IconOptions](/api/icon-options) prop, which allows you to override the default theme styling.
+</Note>
+
+## Examples
+
+### Light Theme (Default)
+
+```tsx
+import { Carousel } from 'react-any-carousal';
+
+function App() {
+  return (
+    <Carousel theme="light">
+      <div>Slide 1</div>
+      <div>Slide 2</div>
+      <div>Slide 3</div>
+    </Carousel>
+  );
+}
+```
+
+### Dark Theme
+
+```tsx
+import { Carousel } from 'react-any-carousal';
+
+function App() {
+  return (
+    <Carousel theme="dark">
+      <div>Slide 1</div>
+      <div>Slide 2</div>
+      <div>Slide 3</div>
+    </Carousel>
+  );
+}
+```
+
+### Dynamic Theme Based on App State
+
+```tsx
+import { Carousel } from 'react-any-carousal';
+import { useState } from 'react';
+
+function App() {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  return (
+    <div>
+      <button onClick={() => setIsDarkMode(!isDarkMode)}>
+        Toggle Theme
+      </button>
+      
+      <Carousel theme={isDarkMode ? 'dark' : 'light'}>
+        <div>Slide 1</div>
+        <div>Slide 2</div>
+        <div>Slide 3</div>
+      </Carousel>
+    </div>
+  );
+}
+```
+
+### Theme with Custom Icon Styling
+
+```tsx
+import { Carousel } from 'react-any-carousal';
+
+function App() {
+  return (
+    <Carousel
+      theme="dark"
+      iconOptions={{
+        iconStyles: {
+          color: '#fff',
+          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+          backdropFilter: 'blur(10px)',
+          borderRadius: '50%',
+          padding: '12px'
+        }
+      }}
+    >
+      <div>Slide 1</div>
+      <div>Slide 2</div>
+      <div>Slide 3</div>
+    </Carousel>
+  );
+}
+```
+
+## Best Practices
+
+<Note>
+  Choose a theme that contrasts well with your carousel content. If your slides have light backgrounds, use the `"light"` theme. For dark slide backgrounds, use the `"dark"` theme.
+</Note>
+
+<Note>
+  The theme prop works in conjunction with `iconOptions`. If you need more granular control over the icon appearance, consider using both props together.
+</Note>
+
+## TypeScript Usage
+
+```tsx
+import { Carousel, Theme } from 'react-any-carousal';
+import { useState } from 'react';
+
+function App() {
+  const [currentTheme, setCurrentTheme] = useState<Theme>('light');
+
+  const toggleTheme = () => {
+    setCurrentTheme(prev => prev === 'light' ? 'dark' : 'light');
+  };
+
+  return (
+    <Carousel theme={currentTheme}>
+      <div>Slide 1</div>
+      <div>Slide 2</div>
+    </Carousel>
+  );
+}
+```
+
+## See Also
+
+- [Carousel](/api/carousel) - Main component documentation
+- [CarouselProps](/api/carousel-props) - Complete props interface
+- [IconOptions](/api/icon-options) - Icon customization options

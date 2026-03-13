@@ -1,0 +1,260 @@
+---
+title: 'ScrollSnapOptions'
+description: 'Type for configuring carousel scroll snapping behavior'
+---
+
+## Overview
+
+The `ScrollSnapOptions` type defines how the carousel aligns its children when scrolling stops. This is based on the CSS [scroll-snap-type](https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-snap-type) property.
+
+## Type Definition
+
+```typescript carousel-props.ts
+/**
+ * Learn more about snapping here: https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-snap-type
+ */
+export type ScrollSnapOptions = "start" | "center" | "end" | "none";
+```
+
+## Values
+
+<ResponseField name="start" type="string">
+  Snaps the start edge of each child to the start edge of the carousel container.
+  
+  This is the **default** value. Best for left-aligned content where you want items to snap to the left edge.
+</ResponseField>
+
+<ResponseField name="center" type="string">
+  Snaps the center of each child to the center of the carousel container.
+  
+  Best for creating a centered carousel where the focused item is always in the middle.
+</ResponseField>
+
+<ResponseField name="end" type="string">
+  Snaps the end edge of each child to the end edge of the carousel container.
+  
+  Best for right-aligned content where you want items to snap to the right edge.
+</ResponseField>
+
+<ResponseField name="none" type="string">
+  Disables scroll snapping entirely.
+  
+  The carousel will scroll freely without automatically aligning to any particular position.
+</ResponseField>
+
+## Default Value
+
+The default scroll snap option is `"start"`.
+
+```tsx
+const defaultScrollSnapType: ScrollSnapOptions = "start";
+```
+
+## How It Works
+
+The scroll snap behavior determines where carousel items align after scrolling:
+
+- **`"start"`** - Items snap to the left edge of the carousel
+- **`"center"`** - Items snap to the center of the carousel
+- **`"end"`** - Items snap to the right edge of the carousel
+- **`"none"`** - No snapping occurs; free scrolling
+
+<Note>
+  If `scrollSnapType` is enabled and `scrollOffset` is less than the child's width, the carousel will still show the next child according to the `scrollSnapType` value.
+</Note>
+
+## Examples
+
+### Start Alignment (Default)
+
+```tsx
+import { Carousel } from 'react-any-carousal';
+
+function App() {
+  return (
+    <Carousel scrollSnapType="start">
+      <div style={{ width: 300 }}>Slide 1</div>
+      <div style={{ width: 300 }}>Slide 2</div>
+      <div style={{ width: 300 }}>Slide 3</div>
+    </Carousel>
+  );
+}
+```
+
+### Center Alignment
+
+Ideal for showcasing featured items:
+
+```tsx
+import { Carousel } from 'react-any-carousal';
+
+function App() {
+  return (
+    <Carousel scrollSnapType="center">
+      <div style={{ width: 400, margin: '0 20px' }}>Featured Item 1</div>
+      <div style={{ width: 400, margin: '0 20px' }}>Featured Item 2</div>
+      <div style={{ width: 400, margin: '0 20px' }}>Featured Item 3</div>
+    </Carousel>
+  );
+}
+```
+
+### End Alignment
+
+Useful for RTL (right-to-left) layouts:
+
+```tsx
+import { Carousel } from 'react-any-carousal';
+
+function App() {
+  return (
+    <Carousel scrollSnapType="end">
+      <div style={{ width: 250 }}>Item 1</div>
+      <div style={{ width: 250 }}>Item 2</div>
+      <div style={{ width: 250 }}>Item 3</div>
+    </Carousel>
+  );
+}
+```
+
+### No Snapping (Free Scroll)
+
+For continuous, free-flowing scrolling:
+
+```tsx
+import { Carousel } from 'react-any-carousal';
+
+function App() {
+  return (
+    <Carousel scrollSnapType="none">
+      <div style={{ width: 200 }}>Item 1</div>
+      <div style={{ width: 200 }}>Item 2</div>
+      <div style={{ width: 200 }}>Item 3</div>
+      <div style={{ width: 200 }}>Item 4</div>
+      <div style={{ width: 200 }}>Item 5</div>
+    </Carousel>
+  );
+}
+```
+
+## Combining with scrollOffset
+
+The `scrollSnapType` works in conjunction with the `scrollOffset` prop:
+
+```tsx
+import { Carousel } from 'react-any-carousal';
+
+function App() {
+  return (
+    <Carousel
+      scrollSnapType="center"
+      scrollOffset={400}
+      duration={800}
+    >
+      <div style={{ width: 400 }}>Slide 1</div>
+      <div style={{ width: 400 }}>Slide 2</div>
+      <div style={{ width: 400 }}>Slide 3</div>
+    </Carousel>
+  );
+}
+```
+
+<Note>
+  When `scrollOffset` is set to a value smaller than the child's width and snapping is enabled, the carousel will snap to the nearest child according to the `scrollSnapType` value, ensuring consistent alignment.
+</Note>
+
+## Visual Comparison
+
+<CodeGroup>
+
+```tsx Start Snap
+// Items align to the left edge
+<Carousel scrollSnapType="start">
+  <div>Item 1</div>
+  <div>Item 2</div>
+</Carousel>
+
+// Result:
+// [Item 1][Item 2][ ... ]
+// ↑ Snaps here
+```
+
+```tsx Center Snap
+// Items align to the center
+<Carousel scrollSnapType="center">
+  <div>Item 1</div>
+  <div>Item 2</div>
+</Carousel>
+
+// Result:
+// [ ... ][Item 1][ ... ]
+//        ↑ Snaps here
+```
+
+```tsx End Snap
+// Items align to the right edge
+<Carousel scrollSnapType="end">
+  <div>Item 1</div>
+  <div>Item 2</div>
+</Carousel>
+
+// Result:
+// [ ... ][Item 1][Item 2]
+//                ↑ Snaps here
+```
+
+```tsx No Snap
+// Free scrolling, no alignment
+<Carousel scrollSnapType="none">
+  <div>Item 1</div>
+  <div>Item 2</div>
+</Carousel>
+
+// Result:
+// [Ite][m 1][Item][ 2 ][ ... ]
+// Can stop anywhere
+```
+
+</CodeGroup>
+
+## Browser Support
+
+Scroll snapping is supported in all modern browsers. The carousel uses the CSS `scroll-snap-type` property internally.
+
+<Note>
+  For detailed browser compatibility information, see the [MDN documentation on scroll-snap-type](https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-snap-type#browser_compatibility).
+</Note>
+
+## TypeScript Usage
+
+```tsx
+import { Carousel, ScrollSnapOptions } from 'react-any-carousal';
+import { useState } from 'react';
+
+function App() {
+  const [snapType, setSnapType] = useState<ScrollSnapOptions>('start');
+
+  return (
+    <div>
+      <select onChange={(e) => setSnapType(e.target.value as ScrollSnapOptions)}>
+        <option value="start">Start</option>
+        <option value="center">Center</option>
+        <option value="end">End</option>
+        <option value="none">None</option>
+      </select>
+      
+      <Carousel scrollSnapType={snapType}>
+        <div>Slide 1</div>
+        <div>Slide 2</div>
+        <div>Slide 3</div>
+      </Carousel>
+    </div>
+  );
+}
+```
+
+## See Also
+
+- [Carousel](/api/carousel) - Main component documentation
+- [CarouselProps](/api/carousel-props) - Complete props interface
+- [MDN: scroll-snap-type](https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-snap-type) - CSS property reference

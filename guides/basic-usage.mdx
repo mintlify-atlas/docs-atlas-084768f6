@@ -1,0 +1,216 @@
+---
+title: 'Basic Usage'
+description: 'Learn the core usage patterns and essential props for AnyCarousel'
+---
+
+## Overview
+
+AnyCarousel is a lightweight, flexible carousel component that works with any React content. This guide covers the fundamental usage patterns and core props you'll need to get started.
+
+## Installation
+
+First, install the package:
+
+<CodeGroup>
+```bash npm
+npm install react-any-carousel
+```
+
+```bash yarn
+yarn add react-any-carousel
+```
+
+```bash pnpm
+pnpm add react-any-carousel
+```
+</CodeGroup>
+
+## Basic Example
+
+The simplest way to use the carousel is to wrap your content with the `Carousel` component:
+
+```tsx
+import { Carousel } from "react-any-carousel";
+
+function App() {
+  return (
+    <Carousel>
+      <div className="card">Item 1</div>
+      <div className="card">Item 2</div>
+      <div className="card">Item 3</div>
+    </Carousel>
+  );
+}
+```
+
+<Info>
+  The carousel accepts any `ReactNode` as children, so you can use images, videos, custom components, or any combination of content.
+</Info>
+
+## Core Props
+
+### children
+
+**Type:** `ReactNode` (Required)
+
+Any iterable ReactNode element that the carousel will display.
+
+```tsx carousel-props.ts
+children: ReactNode;
+```
+
+### scrollOffset
+
+**Type:** `number`  
+**Default:** `1000`
+
+Controls how far the carousel scrolls when navigation buttons are clicked. This is measured in pixels.
+
+```tsx
+<Carousel scrollOffset={300}>
+  {/* Scrolls 300px per click */}
+</Carousel>
+```
+
+<Tip>
+  **Best Practices:**
+  - Set `scrollOffset` to match your child element's width for single-item scrolling
+  - Set it to the container's width for full-page scrolling
+  - If `scrollSnapType` is enabled and `scrollOffset` is less than the child's width, the carousel will still snap to the next child according to the snap alignment
+</Tip>
+
+### duration
+
+**Type:** `number`  
+**Default:** `600`  
+**Range:** `100` - `5000` ms
+
+Defines how long each scroll transition takes, in milliseconds.
+
+```tsx constants/carousel.ts
+export const DEFAULT_DURATION = 600; // in ms
+export const MIN_DURATION = 100;
+export const MAX_DURATION = 5000;
+```
+
+**Usage:**
+
+```tsx
+<Carousel duration={800}>
+  {/* Slower, smoother transitions */}
+</Carousel>
+```
+
+<Note>
+  The duration value is automatically clamped between 100ms and 5000ms to ensure reasonable animation speeds.
+</Note>
+
+## Scroll Snap Basics
+
+### scrollSnapType
+
+**Type:** `"start" | "center" | "end" | "none"`  
+**Default:** `"start"`
+
+Determines how items align when they snap into view. This uses CSS scroll-snap under the hood.
+
+```tsx
+<Carousel scrollSnapType="center">
+  {/* Items snap to center of viewport */}
+</Carousel>
+```
+
+**Snap Types Explained:**
+
+- **`start`**: Items align to the start of the container (left edge)
+- **`center`**: Items align to the center of the viewport
+- **`end`**: Items align to the end of the container (right edge)
+- **`none`**: Disables snap scrolling for free-form scrolling
+
+See the [Snap Scrolling guide](/guides/snap-scrolling) for more details.
+
+## Complete Example
+
+Here's a practical example combining the core props:
+
+```tsx
+import { Carousel } from "react-any-carousel";
+
+function ImageCarousel() {
+  const images = [
+    "/images/photo1.jpg",
+    "/images/photo2.jpg",
+    "/images/photo3.jpg",
+  ];
+
+  return (
+    <Carousel
+      scrollSnapType="center"
+      scrollOffset={400}
+      duration={700}
+    >
+      {images.map((src, index) => (
+        <img
+          key={index}
+          src={src}
+          alt={`Slide ${index + 1}`}
+          style={{ width: "400px", height: "300px", objectFit: "cover" }}
+        />
+      ))}
+    </Carousel>
+  );
+}
+```
+
+## Navigation Behavior
+
+The carousel provides automatic navigation buttons that:
+
+- Appear on the **left** when content is scrollable to the left
+- Appear on the **right** when content is scrollable to the right
+- Use smooth animated scrolling based on your `duration` and easing settings
+- Hide when there's no more content in that direction
+
+```tsx carousel.tsx
+const handleScroll = () => {
+  if (!containerRef.current) return;
+  const { scrollLeft, scrollWidth, clientWidth } = containerRef.current;
+
+  setShowLeft(scrollLeft > 0);
+  setShowRight(scrollLeft + clientWidth < scrollWidth - 1);
+};
+```
+
+<Warning>
+  Navigation buttons automatically hide when the user reaches the start or end of the carousel. This is intentional to provide clear visual feedback about scroll position.
+</Warning>
+
+## Mobile and Touch Support
+
+The carousel is fully touch-enabled out of the box:
+
+- **Mobile**: Swipe left/right to scroll
+- **Tablet**: Touch and drag gestures
+- **Desktop**: Shift + Scroll wheel for horizontal scrolling
+- **Touchpad**: Two-finger horizontal scroll
+
+<Info>
+  No additional configuration is needed for touch support - it works automatically on all devices.
+</Info>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Custom Easing" icon="bezier-curve" href="/guides/custom-easing">
+    Learn how to create smooth, custom scroll animations
+  </Card>
+  <Card title="Custom Icons" icon="icons" href="/guides/custom-icons">
+    Customize navigation button appearance and icons
+  </Card>
+  <Card title="Auto Scroll" icon="play" href="/guides/auto-scroll">
+    Set up automatic sliding at fixed intervals
+  </Card>
+  <Card title="Theming" icon="palette" href="/guides/theming">
+    Apply light and dark themes to your carousel
+  </Card>
+</CardGroup>
